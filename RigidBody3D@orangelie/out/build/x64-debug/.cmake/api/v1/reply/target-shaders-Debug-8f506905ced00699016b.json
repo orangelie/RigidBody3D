@@ -1,0 +1,35 @@
+{
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target"
+		],
+		"files" : 
+		[
+			"RigidBody3D@orangelie/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 4,
+				"parent" : 0
+			}
+		]
+	},
+	"id" : "shaders::@e2db9665777525b7836f",
+	"name" : "shaders",
+	"paths" : 
+	{
+		"build" : "RigidBody3D@orangelie",
+		"source" : "RigidBody3D@orangelie"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
