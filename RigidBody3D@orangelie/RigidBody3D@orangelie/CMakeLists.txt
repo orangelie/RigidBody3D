@@ -32,8 +32,13 @@ set(FRAMERESOURCE_DF "Test/FrameResource/RigidBodySim/FrameResource.h" "Test/Fra
 set(CAMERA "Camera.h" "Camera.cpp")
 set(FONT "Font.h" "Font.cpp")
 
-add_executable (RigidBody3D "main.cpp" "Test/RigidBodySim.h" "UploadBuffer.h" ${DEPENDENCIES} ${UTILITIES} ${DXGI_RENDERER} ${GAMETIMER} ${GEOMETRYGENN} ${FRAMERESOURCE_DF} ${CAMERA} ${FONT})
+set(RIGIDBODY "Physics/RigidBody.cpp" "Physics/RigidBody.h")
+set(PHYSICS ${RIGIDBODY})
+
+add_executable (RigidBody3D "main.cpp" "Test/RigidBodySim.h" "UploadBuffer.h" ${DEPENDENCIES} ${UTILITIES} ${DXGI_RENDERER} ${GAMETIMER} ${GEOMETRYGENN} ${FRAMERESOURCE_DF} ${CAMERA} ${FONT} ${PHYSICS})
 include_directories(RigidBody3D "./Dependencies")
+include_directories(RigidBody3D "./Physics")
+include_directories(RigidBody3D "./")
 add_dependencies(RigidBody3D shaders)
 target_compile_definitions(RigidBody3D PRIVATE RIGIDBODYSIM)
 

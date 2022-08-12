@@ -50,16 +50,16 @@ The CXX compiler identification is MSVC, found in "C:/Users/parksangwo/Desktop/G
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: C:/Users/parksangwo/Desktop/Github/RigidBody3D/RigidBody3D@orangelie/out/build/x64-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_4c3dc && [1/2] Building C object CMakeFiles\cmTC_4c3dc.dir\CMakeCCompilerABI.c.obj
-[2/2] Linking C executable cmTC_4c3dc.exe
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_22241 && [1/2] Building C object CMakeFiles\cmTC_22241.dir\CMakeCCompilerABI.c.obj
+[2/2] Linking C executable cmTC_22241.exe
 
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: C:/Users/parksangwo/Desktop/Github/RigidBody3D/RigidBody3D@orangelie/out/build/x64-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_3504f && [1/2] Building CXX object CMakeFiles\cmTC_3504f.dir\CMakeCXXCompilerABI.cpp.obj
-[2/2] Linking CXX executable cmTC_3504f.exe
+Run Build Command(s):C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe cmTC_5f0a6 && [1/2] Building CXX object CMakeFiles\cmTC_5f0a6.dir\CMakeCXXCompilerABI.cpp.obj
+[2/2] Linking CXX executable cmTC_5f0a6.exe
 
 
 

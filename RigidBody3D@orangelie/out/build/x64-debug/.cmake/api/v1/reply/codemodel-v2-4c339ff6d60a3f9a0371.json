@@ -1,0 +1,85 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "RigidBody3D@orangelie",
+					"jsonFile" : "directory-RigidBody3D@orangelie-Debug-8efcfdfeec775d8a5d60.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "RigidBody3D@orangelie",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "RigidBody3D@orangelie",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "RigidBody3D::@e2db9665777525b7836f",
+					"jsonFile" : "target-RigidBody3D-Debug-77b74d21baede69fd901.json",
+					"name" : "RigidBody3D",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "shaders::@e2db9665777525b7836f",
+					"jsonFile" : "target-shaders-Debug-8f506905ced00699016b.json",
+					"name" : "shaders",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/parksangwo/Desktop/Github/RigidBody3D/RigidBody3D@orangelie/out/build/x64-debug",
+		"source" : "C:/Users/parksangwo/Desktop/Github/RigidBody3D/RigidBody3D@orangelie"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

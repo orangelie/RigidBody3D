@@ -112,11 +112,22 @@ namespace Shader
         float SpotPower;
     };
 
+    enum class BOUNDS : int
+    {
+        BoundingBox = 0x00,
+        BoundingSphere,
+        Count
+    };
+
     struct SubmeshGeometry
     {
         UINT IndexCount;
         UINT StartIndexLocation;
         INT BaseVertexLocation;
+
+        BOUNDS Bounds;
+        DirectX::BoundingBox BBox;
+        DirectX::BoundingSphere BSph;
     };
 
     struct MeshGeometry

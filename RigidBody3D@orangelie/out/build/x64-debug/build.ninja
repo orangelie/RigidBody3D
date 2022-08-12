@@ -91,7 +91,7 @@ build cmake_object_order_depends_target_RigidBody3D: phony || RigidBody3D@orange
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\main.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\main.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -100,7 +100,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\main.cpp.obj: CXX_COMPILE
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Dependencies\DDSTextureLoader.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Dependencies\DDSTextureLoader.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Dependencies
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -109,7 +109,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Dependencies\DDSTextureLo
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Utils.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Utils.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -118,7 +118,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Utils.cpp.obj: CXX_COMPIL
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Renderer.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Renderer.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -127,7 +127,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Renderer.cpp.obj: CXX_COM
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GameTimer.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\GameTimer.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -136,7 +136,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GameTimer.cpp.obj: CXX_CO
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GeometryGenerator.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\GeometryGenerator.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -145,7 +145,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GeometryGenerator.cpp.obj
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Test\FrameResource\RigidBodySim\FrameResource.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Test\FrameResource\RigidBodySim\FrameResource.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Test\FrameResource\RigidBodySim
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -154,7 +154,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Test\FrameResource\RigidB
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Camera.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Camera.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
@@ -163,9 +163,18 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Camera.cpp.obj: CXX_COMPI
 build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Font.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Font.cpp || cmake_object_order_depends_target_RigidBody3D
   DEFINES = -DRIGIDBODYSIM
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
-  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
   OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
   OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
+  TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
+  TARGET_PDB = RigidBody3D@orangelie\RigidBody3D.pdb
+
+build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Physics\RigidBody.cpp.obj: CXX_COMPILER__RigidBody3D_Debug C$:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\Physics\RigidBody.cpp || cmake_object_order_depends_target_RigidBody3D
+  DEFINES = -DRIGIDBODYSIM
+  FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
+  INCLUDES = -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\RigidBody3D -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Dependencies -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.\Physics -IC:\Users\parksangwo\Desktop\Github\RigidBody3D\RigidBody3D@orangelie\RigidBody3D@orangelie\.
+  OBJECT_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir
+  OBJECT_FILE_DIR = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Physics
   TARGET_COMPILE_PDB = RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\
   TARGET_PDB = RigidBody3D@orangelie\RigidBody3D.pdb
 
@@ -177,7 +186,7 @@ build RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Font.cpp.obj: CXX_COMPILE
 #############################################
 # Link the executable RigidBody3D@orangelie\RigidBody3D.exe
 
-build RigidBody3D@orangelie\RigidBody3D.exe: CXX_EXECUTABLE_LINKER__RigidBody3D_Debug RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\main.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Dependencies\DDSTextureLoader.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Utils.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Renderer.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GameTimer.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GeometryGenerator.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Test\FrameResource\RigidBodySim\FrameResource.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Camera.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Font.cpp.obj || RigidBody3D@orangelie\shaders
+build RigidBody3D@orangelie\RigidBody3D.exe: CXX_EXECUTABLE_LINKER__RigidBody3D_Debug RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\main.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Dependencies\DDSTextureLoader.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Utils.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Renderer.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GameTimer.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\GeometryGenerator.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Test\FrameResource\RigidBodySim\FrameResource.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Camera.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Font.cpp.obj RigidBody3D@orangelie\CMakeFiles\RigidBody3D.dir\Physics\RigidBody.cpp.obj || RigidBody3D@orangelie\shaders
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1
   LINK_FLAGS = /machine:x64 /debug /INCREMENTAL /subsystem:console
   LINK_LIBRARIES = kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib

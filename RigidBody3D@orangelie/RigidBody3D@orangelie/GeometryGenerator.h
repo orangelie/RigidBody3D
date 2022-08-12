@@ -65,6 +65,7 @@ namespace orangelie
 		};
 
 		MeshData CreateBox(float width, float height, float depth, u32 numSubdivisions);
+		MeshData CreateSphere(float radius, u32 sliceCount, u32 stackCount);
 		void Subdivide(MeshData& meshData);
 		Vertex MidPoint(const Vertex& v0, const Vertex& v1);
 		MeshData CreateQuad(float x, float y, float width, float height, float depth);

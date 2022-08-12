@@ -174,27 +174,38 @@ namespace orangelie
 			mMaterials["wood"] = std::move(wood);
 		}
 
-		void BuildQuadMesh()
+		void BuildShapeMesh()
 		{
 			GeometryGenerator geoGen;
-			GeometryGenerator::MeshData quad = geoGen.CreateQuad(100.0f, 100.0f, 50.0f, 50.0f, 1.0f);
+			GeometryGenerator::MeshData box = geoGen.CreateBox(1.5f, 1.5f, 1.5f, 3);
+			GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
 
-			std::vector<Shader::Vertex> vertices(quad.Vertices.size());
-			for (size_t i = 0; i < vertices.size(); ++i)
+			UINT k = 0;
+			std::vector<Shader::Vertex> vertices(box.Vertices.size() + sphere.Vertices.size());
+
+			for (size_t i = 0; i < box.Vertices.size(); ++i, ++k)
 			{
-				vertices[i].Position = quad.Vertices[i].Position;
-				vertices[i].Normal = quad.Vertices[i].Normal;
-				vertices[i].Tangent = quad.Vertices[i].Tangent;
-				vertices[i].TexCoord = quad.Vertices[i].TexCoord;
+				vertices[k].Position = box.Vertices[i].Position;
+				vertices[k].Normal = box.Vertices[i].Normal;
+				vertices[k].Tangent = box.Vertices[i].Tangent;
+				vertices[k].TexCoord = box.Vertices[i].TexCoord;
+			}
+			for (size_t i = 0; i < sphere.Vertices.size(); ++i, ++k)
+			{
+				vertices[k].Position = sphere.Vertices[i].Position;
+				vertices[k].Normal = sphere.Vertices[i].Normal;
+				vertices[k].Tangent = sphere.Vertices[i].Tangent;
+				vertices[k].TexCoord = sphere.Vertices[i].TexCoord;
 			}
 
-			std::vector<std::uint32_t> indices = quad.Indices;
+			std::vector<std::uint32_t> indices = box.Indices;
+			indices.insert(indices.end(), sphere.Indices.begin(), sphere.Indices.end());
 
 			UINT vertexBufferSize = sizeof(Shader::Vertex) * (UINT)vertices.size();
 			UINT indexBufferSize = sizeof(std::uint32_t) * (UINT)indices.size();
 
 			auto meshGeometry = std::make_unique<Shader::MeshGeometry>();
-			meshGeometry->name = "shape";
+			meshGeometry->name = "shapeGeo";
 
 			HR(D3DCreateBlob(vertexBufferSize, meshGeometry->VertexCpu.GetAddressOf()));
 			CopyMemory(meshGeometry->VertexCpu->GetBufferPointer(), vertices.data(), vertexBufferSize);
@@ -212,60 +223,17 @@ namespace orangelie
 			meshGeometry->IndexFormat = DXGI_FORMAT_R32_UINT;
 			meshGeometry->IndexBufferByteSize = indexBufferSize;
 
-			Shader::SubmeshGeometry subMeshGeo = {};
-			subMeshGeo.IndexCount = (UINT)indices.size();
-			subMeshGeo.BaseVertexLocation = 0;
-			subMeshGeo.StartIndexLocation = 0;
+			Shader::SubmeshGeometry subMeshBox = {};
+			subMeshBox.IndexCount = (UINT)box.Indices.size();
+			subMeshBox.BaseVertexLocation = 0;
+			subMeshBox.StartIndexLocation = 0;
+			meshGeometry->DrawArgs["box"] = subMeshBox;
 
-			meshGeometry->DrawArgs["quad"] = subMeshGeo;
-
-			mDrawArgs[meshGeometry->name] = std::move(meshGeometry);
-		}
-
-		void BuildBoxMesh()
-		{
-			GeometryGenerator geoGen;
-			GeometryGenerator::MeshData quad = geoGen.CreateBox(10.0f, 10.0f, 10.0f, 20);
-
-			std::vector<Shader::Vertex> vertices(quad.Vertices.size());
-			for (size_t i = 0; i < vertices.size(); ++i)
-			{
-				vertices[i].Position = quad.Vertices[i].Position;
-				vertices[i].Normal = quad.Vertices[i].Normal;
-				vertices[i].Tangent = quad.Vertices[i].Tangent;
-				vertices[i].TexCoord = quad.Vertices[i].TexCoord;
-			}
-
-			std::vector<std::uint32_t> indices = quad.Indices;
-
-			UINT vertexBufferSize = sizeof(Shader::Vertex) * (UINT)vertices.size();
-			UINT indexBufferSize = sizeof(std::uint32_t) * (UINT)indices.size();
-
-			auto meshGeometry = std::make_unique<Shader::MeshGeometry>();
-			meshGeometry->name = "shapeSub";
-
-			HR(D3DCreateBlob(vertexBufferSize, meshGeometry->VertexCpu.GetAddressOf()));
-			CopyMemory(meshGeometry->VertexCpu->GetBufferPointer(), vertices.data(), vertexBufferSize);
-			HR(D3DCreateBlob(indexBufferSize, meshGeometry->IndexCpu.GetAddressOf()));
-			CopyMemory(meshGeometry->IndexCpu->GetBufferPointer(), indices.data(), indexBufferSize);
-
-			meshGeometry->VertexGpu = Utils::CreateDefaultResource(mDevice.Get(), mGraphicsCommandList.Get(),
-				vertices.data(), vertexBufferSize, meshGeometry->VertexGpuUploader);
-			meshGeometry->IndexGpu = Utils::CreateDefaultResource(mDevice.Get(), mGraphicsCommandList.Get(),
-				indices.data(), indexBufferSize, meshGeometry->IndexGpuUploader);
-
-			meshGeometry->VertexBufferByteSize = vertexBufferSize;
-			meshGeometry->VertexByteStride = sizeof(Shader::Vertex);
-
-			meshGeometry->IndexFormat = DXGI_FORMAT_R32_UINT;
-			meshGeometry->IndexBufferByteSize = indexBufferSize;
-
-			Shader::SubmeshGeometry subMeshGeo = {};
-			subMeshGeo.IndexCount = (UINT)indices.size();
-			subMeshGeo.BaseVertexLocation = 0;
-			subMeshGeo.StartIndexLocation = 0;
-
-			meshGeometry->DrawArgs["box"] = subMeshGeo;
+			Shader::SubmeshGeometry subMeshSphere = {};
+			subMeshSphere.IndexCount = (UINT)sphere.Indices.size();
+			subMeshSphere.BaseVertexLocation = (INT)box.Vertices.size();
+			subMeshSphere.StartIndexLocation = (UINT)box.Indices.size();
+			meshGeometry->DrawArgs["sphere"] = subMeshSphere;
 
 			mDrawArgs[meshGeometry->name] = std::move(meshGeometry);
 		}
@@ -329,7 +297,7 @@ namespace orangelie
 			DirectX::XMStoreFloat4x4(&quadRitem->World, DirectX::XMMatrixTranslation(0.0f, 0.0f, 30.0f));
 			quadRitem->TexTransform = Utils::MatrixIdentity();
 			quadRitem->Mat = mMaterials["wood"].get();
-			quadRitem->meshGeo = mDrawArgs["shapeSub"].get();
+			quadRitem->meshGeo = mDrawArgs["shapeGeo"].get();
 			quadRitem->IndexCount = quadRitem->meshGeo->DrawArgs["box"].IndexCount;
 			quadRitem->BaseVertexLocation = quadRitem->meshGeo->DrawArgs["box"].BaseVertexLocation;
 			quadRitem->StartIndexLocation = quadRitem->meshGeo->DrawArgs["box"].StartIndexLocation;
@@ -557,8 +525,7 @@ namespace orangelie
 			BuildDescriptor();
 			BuildShadersAndInputLayout();
 			BuildMaterial();
-			BuildQuadMesh();
-			BuildBoxMesh();
+			BuildShapeMesh();
 			BuildFont();
 			BuildRenderItems();
 			BuildFrameResources();
