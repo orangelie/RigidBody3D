@@ -2,5 +2,17 @@
 
 namespace orangelie
 {
+	void RigidBody::CalculateDerivedData()
+	{
+
+	}
+
+
+
+
+
+
+
+
 
 }
