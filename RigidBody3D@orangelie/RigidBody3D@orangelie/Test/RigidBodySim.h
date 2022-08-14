@@ -14,9 +14,13 @@ namespace orangelie
 	class RigidBodySim : public Renderer
 	{
 	private:
+		Physics::RigidBody mRigidBody;
+
+
 		std::unordered_map<std::string, std::vector<Shader::FontType>> mFontData;
 		const static int gMaxNumTextCharacters = 256;	//< Must be greater than 256 and must be a multiple of 16 >//
 		Shader::RenderItem* mTextVB = nullptr;
+		Shader::RenderItem* mBoxVB = nullptr;
 
 		Camera mCamera;
 		std::vector<std::unique_ptr<FrameResource>> mFrameResources;
@@ -303,8 +307,18 @@ namespace orangelie
 			quadRitem->StartIndexLocation = quadRitem->meshGeo->DrawArgs["box"].StartIndexLocation;
 			quadRitem->PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
+			mBoxVB = quadRitem.get();
 			mRenderLayer[(size_t)Shader::RenderLayer::Opaque].push_back(quadRitem.get());
 			mAllRenderItems.push_back(std::move(quadRitem));
+
+			mRigidBody.setSleep(false);
+			mRigidBody.setAwake(true);
+			mRigidBody.SetMass(8.0f);
+			mRigidBody.SetVelocity(0.0f, 0.0f, 0.0f);
+			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
+			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
+			mRigidBody.SetDamping(0.95f, 0.8f);
+			// mRigidBody.SetInertiaTensor();
 
 			auto textRitem = std::make_unique<Shader::RenderItem>();
 			textRitem->ObjIndex = 1;
@@ -401,6 +415,12 @@ namespace orangelie
 
 		void UpdateObjectCB()
 		{
+			DirectX::XMFLOAT4 pos = {};
+			mRigidBody.Integrate(mGameTimer.DeltaTime());
+			mRigidBody.GetPosition(pos);
+			DirectX::XMStoreFloat4x4(&mBoxVB->World, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&pos)));
+			mBoxVB->NumframeDirty = Shader::gNumFrameResources;
+
 			for (auto& e : mAllRenderItems)
 			{
 				if (e->NumframeDirty > 0)
@@ -458,7 +478,10 @@ namespace orangelie
 		{
 			using Shader::TextVertex;
 			
-			std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
+			//std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
+			DirectX::XMFLOAT4 pos = {};
+			mRigidBody.GetPosition(pos);
+			std::string sentence = "(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + ")";
 			int numLetters = (int)sentence.size();
 
 			if (numLetters >= gMaxNumTextCharacters)
