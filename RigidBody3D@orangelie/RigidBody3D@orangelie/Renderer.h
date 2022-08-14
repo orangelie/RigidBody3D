@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "Font.h"
 
+#include "Physics/RigidBody.h"
+
 
 namespace orangelie
 {

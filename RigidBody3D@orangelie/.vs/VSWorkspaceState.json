@@ -2,7 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\RigidBody3D@orangelie",
-    "\\RigidBody3D@orangelie\\Physics"
+    "\\RigidBody3D@orangelie\\Physics",
+    "\\RigidBody3D@orangelie\\Test"
   ],
   "SelectedNode": "\\RigidBody3D@orangelie\\Physics\\RigidBody.cpp",
   "PreviewInSolutionExplorer": false

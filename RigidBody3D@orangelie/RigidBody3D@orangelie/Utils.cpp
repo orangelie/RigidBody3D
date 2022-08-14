@@ -2,6 +2,48 @@
 
 namespace Utils
 {
+    namespace MathTool
+    {
+        void Scalar(DirectX::XMFLOAT4& V, float scalar)
+        {
+            V.x *= scalar;
+            V.y *= scalar;
+            V.z *= scalar;
+        }
+
+        void AddScaledVector(DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, float scale)
+        {
+            V1.x += V2.x * scale;
+            V1.y += V2.y * scale;
+            V1.z += V2.z * scale;
+        }
+
+        void AddScaledQuaternion(DirectX::XMFLOAT4& Q, const DirectX::XMFLOAT4& V, float scale)
+        {
+            DirectX::XMFLOAT4 nQ = {};
+            nQ.x = V.x * scale;
+            nQ.y = V.y * scale;
+            nQ.z = V.z * scale;
+            nQ.w = 0.0f;
+
+            DirectX::XMVECTOR QVec = DirectX::XMLoadFloat4(&Q);
+            DirectX::XMVECTOR nQVec = DirectX::XMLoadFloat4(&nQ);
+            DirectX::XMStoreFloat4(&nQ, DirectX::XMQuaternionMultiply(nQVec, QVec));
+
+            Q.x += nQ.x * 0.5f;
+            Q.y += nQ.y * 0.5f;
+            Q.z += nQ.z * 0.5f;
+            Q.w += nQ.w * 0.5f;
+        }
+
+        void Transform(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V)
+        {
+            Out.x = M.m[0][0] * V.x + M.m[0][1] * V.y + M.m[0][2] * V.z;
+            Out.y = M.m[1][0] * V.x + M.m[1][1] * V.y + M.m[1][2] * V.z;
+            Out.z = M.m[2][0] * V.x + M.m[2][1] * V.y + M.m[2][2] * V.z;
+        }
+    }
+
     DirectX::XMFLOAT4X4 MatrixIdentity()
     {
         static DirectX::XMFLOAT4X4 identity = {

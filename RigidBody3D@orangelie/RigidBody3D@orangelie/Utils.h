@@ -58,6 +58,14 @@ _Tp& unmove(_Tp&& __value)
 
 namespace Utils
 {
+    namespace MathTool
+    {
+        void Scalar(DirectX::XMFLOAT4& V, float scalar);
+        void AddScaledVector(DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, float scale);
+        void AddScaledQuaternion(DirectX::XMFLOAT4& Q, const DirectX::XMFLOAT4& V, float scale);
+        void Transform(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V);
+    }
+
     DirectX::XMFLOAT4X4 MatrixIdentity();
 
     UINT ConstantBufferSize(UINT size);
