@@ -1,5 +1,6 @@
 #include "RigidBody.h"
 
+
 namespace orangelie
 {
 	namespace Physics
@@ -130,6 +131,21 @@ namespace orangelie
 			mAcceleration.z = z;
 		}
 
+		void RigidBody::SetRotation(const float x, const float y, const float z)
+		{
+			mRotation.x = x;
+			mRotation.y = y;
+			mRotation.z = z;
+		}
+
+		void RigidBody::SetOrientation(const float i, const float j, const float k, const float r)
+		{
+			mOrientation.x = i;
+			mOrientation.y = j;
+			mOrientation.z = k;
+			mOrientation.w = r;
+		}
+
 		void RigidBody::SetDamping(const float linearDamping, const float angularDamping)
 		{
 			mLinearDamping = linearDamping;
@@ -147,6 +163,38 @@ namespace orangelie
 			Position.x = mPosition.x;
 			Position.y = mPosition.y;
 			Position.z = mPosition.z;
+		}
+
+		void RigidBody::GetRotation(DirectX::XMFLOAT4& Rotation)
+		{
+			Rotation.x = mRotation.x;
+			Rotation.y = mRotation.y;
+			Rotation.z = mRotation.z;
+		}
+
+		void RigidBody::GetVelocity(DirectX::XMFLOAT4& Velocity)
+		{
+			Velocity.x = mVelocity.x;
+			Velocity.y = mVelocity.y;
+			Velocity.z = mVelocity.z;
+		}
+
+		bool RigidBody::GetAwake() const
+		{
+			return mIsAwake;
+		}
+
+		void RigidBody::GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration)
+		{
+			Acceleration.x = mLastframeAcceleration.x;
+			Acceleration.y = mLastframeAcceleration.y;
+			Acceleration.z = mLastframeAcceleration.z;
+		}
+
+		void RigidBody::GetTransform(DirectX::XMFLOAT4X4& transformMatrix)
+		{
+			DirectX::XMMATRIX T = DirectX::XMLoadFloat4x4(&mTransformMatrix);
+			DirectX::XMStoreFloat4x4(&transformMatrix, DirectX::XMMatrixTranspose(T));
 		}
 	}
 }

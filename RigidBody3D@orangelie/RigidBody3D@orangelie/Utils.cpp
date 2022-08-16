@@ -42,6 +42,38 @@ namespace Utils
             Out.y = M.m[1][0] * V.x + M.m[1][1] * V.y + M.m[1][2] * V.z;
             Out.z = M.m[2][0] * V.x + M.m[2][1] * V.y + M.m[2][2] * V.z;
         }
+
+        void TransformTranspose(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V)
+        {
+            Out.x = M.m[0][0] * V.x + M.m[1][0] * V.y + M.m[2][0] * V.z;
+            Out.y = M.m[0][1] * V.x + M.m[1][1] * V.y + M.m[2][1] * V.z;
+            Out.z = M.m[0][2] * V.x + M.m[1][2] * V.y + M.m[2][2] * V.z;
+        }
+
+        void InertiaTensorCoeffs(DirectX::XMFLOAT4X4& InertiaTensor, float ix, float iy, float iz, float ixy, float ixz, float iyz)
+        {
+            InertiaTensor.m[0][0] = ix;     InertiaTensor.m[0][1] = -ixy;   InertiaTensor.m[0][2] = -ixz;   InertiaTensor.m[0][3] = 0;
+            InertiaTensor.m[1][0] = -ixy;   InertiaTensor.m[1][1] = iy;     InertiaTensor.m[1][2] = -iyz;   InertiaTensor.m[1][3] = 0;
+            InertiaTensor.m[2][0] = -ixz;   InertiaTensor.m[2][1] = -iyz;   InertiaTensor.m[2][2] = iz;     InertiaTensor.m[2][3] = 0;
+            InertiaTensor.m[3][0] = 0;      InertiaTensor.m[3][1] = 0;      InertiaTensor.m[3][2] = 0;      InertiaTensor.m[3][3] = 1;
+        }
+
+        void BlockInertiaTensor(DirectX::XMFLOAT4X4& InertiaTensor, const DirectX::XMFLOAT4& halfSizes, const float& mass)
+        {
+            DirectX::XMFLOAT4 squared = { halfSizes.x * halfSizes.x, halfSizes.y * halfSizes.y, halfSizes.z * halfSizes.z, halfSizes.w };
+
+            const float coeff = mass * 0.3f;
+            InertiaTensorCoeffs(InertiaTensor, coeff * (squared.y + squared.z),
+                coeff * (squared.x + squared.z), coeff * (squared.x + squared.y));
+        }
+
+        void SetComponents(DirectX::XMFLOAT4X4& Comp, const DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, const DirectX::XMFLOAT4& V3)
+        {
+            Comp.m[0][0] = V1.x;    Comp.m[0][1] = V2.x;    Comp.m[0][2] = V3.x;    Comp.m[0][3] = 0.0f;
+            Comp.m[1][0] = V1.y;    Comp.m[1][1] = V2.y;    Comp.m[1][2] = V3.y;    Comp.m[1][3] = 0.0f;
+            Comp.m[2][0] = V1.z;    Comp.m[2][1] = V2.z;    Comp.m[2][2] = V3.z;    Comp.m[2][3] = 0.0f;
+            Comp.m[3][0] = 0.0f;    Comp.m[3][1] = 0.0f;    Comp.m[3][2] = 0.0f;    Comp.m[3][3] = 1.0f;
+        }
     }
 
     DirectX::XMFLOAT4X4 MatrixIdentity()

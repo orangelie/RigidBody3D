@@ -1,4 +1,7 @@
+#pragma once
+
 #include "Utils.h"
+
 
 constexpr static const float gSleepEpsilon = 0.3f;
 
@@ -24,10 +27,17 @@ namespace orangelie
 			void SetMass(const float mass);
 			void SetVelocity(const float x, const float y, const float z);
 			void SetAcceleration(const float x, const float y, const float z);
+			void SetRotation(const float x, const float y, const float z);
+			void SetOrientation(const float i, const float j, const float k, const float r);
 			void SetDamping(const float linearDamping, const float angularDamping);
 			void SetInertiaTensor(const DirectX::XMFLOAT4X4& InertiaTensor);
 
 			void GetPosition(DirectX::XMFLOAT4& Position);
+			void GetRotation(DirectX::XMFLOAT4& Rotation);
+			void GetVelocity(DirectX::XMFLOAT4& Velocity);
+			bool GetAwake() const;
+			void GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration);
+			void GetTransform(DirectX::XMFLOAT4X4& transformMatrix);
 
 		private:
 			// 질량의 역수

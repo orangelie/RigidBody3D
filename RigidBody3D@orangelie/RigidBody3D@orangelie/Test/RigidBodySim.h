@@ -318,7 +318,13 @@ namespace orangelie
 			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
 			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
 			mRigidBody.SetDamping(0.95f, 0.8f);
-			// mRigidBody.SetInertiaTensor();
+			mRigidBody.SetRotation(0.0f, 1.5f, 0.0f);
+			mRigidBody.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
+			
+			DirectX::XMFLOAT4X4 inertiaTensor = {};
+			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };
+			Utils::MathTool::BlockInertiaTensor(inertiaTensor, halfSize, halfSize.x * halfSize.y * halfSize.z * 8.0f);
+			mRigidBody.SetInertiaTensor(inertiaTensor);
 
 			auto textRitem = std::make_unique<Shader::RenderItem>();
 			textRitem->ObjIndex = 1;
@@ -415,10 +421,10 @@ namespace orangelie
 
 		void UpdateObjectCB()
 		{
-			DirectX::XMFLOAT4 pos = {};
 			mRigidBody.Integrate(mGameTimer.DeltaTime());
-			mRigidBody.GetPosition(pos);
-			DirectX::XMStoreFloat4x4(&mBoxVB->World, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&pos)));
+
+			DirectX::XMFLOAT4X4 mat = {}; mRigidBody.GetTransform(mat);
+			mBoxVB->World = mat;
 			mBoxVB->NumframeDirty = Shader::gNumFrameResources;
 
 			for (auto& e : mAllRenderItems)
@@ -478,10 +484,10 @@ namespace orangelie
 		{
 			using Shader::TextVertex;
 			
-			//std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
+			std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
 			DirectX::XMFLOAT4 pos = {};
-			mRigidBody.GetPosition(pos);
-			std::string sentence = "(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + ")";
+			mRigidBody.GetRotation(pos);
+			//std::string sentence = "(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + ")";
 			int numLetters = (int)sentence.size();
 
 			if (numLetters >= gMaxNumTextCharacters)

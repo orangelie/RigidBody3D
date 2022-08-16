@@ -33,7 +33,8 @@ set(CAMERA "Camera.h" "Camera.cpp")
 set(FONT "Font.h" "Font.cpp")
 
 set(RIGIDBODY "Physics/RigidBody.cpp" "Physics/RigidBody.h")
-set(PHYSICS ${RIGIDBODY})
+set(CONTACT "Physics/Contact.cpp" "Physics/Contact.h")
+set(PHYSICS ${RIGIDBODY} ${CONTACT})
 
 add_executable (RigidBody3D "main.cpp" "Test/RigidBodySim.h" "UploadBuffer.h" ${DEPENDENCIES} ${UTILITIES} ${DXGI_RENDERER} ${GAMETIMER} ${GEOMETRYGENN} ${FRAMERESOURCE_DF} ${CAMERA} ${FONT} ${PHYSICS})
 include_directories(RigidBody3D "./Dependencies")
