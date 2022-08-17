@@ -21,6 +21,7 @@ namespace orangelie
 			void Integrate(float dt);
 			void ClearAccmulator();
 
+			void AddForce(float x, float y, float z);
 			void SetPosition(const float x, const float y, const float z);
 			void setAwake(const bool awake = true);
 			void setSleep(const bool sleep);
@@ -35,6 +36,7 @@ namespace orangelie
 			void GetPosition(DirectX::XMFLOAT4& Position);
 			void GetRotation(DirectX::XMFLOAT4& Rotation);
 			void GetVelocity(DirectX::XMFLOAT4& Velocity);
+			float GetInverseMass() const;
 			bool GetAwake() const;
 			void GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration);
 			void GetTransform(DirectX::XMFLOAT4X4& transformMatrix);

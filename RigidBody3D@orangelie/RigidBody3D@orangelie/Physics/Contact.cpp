@@ -43,9 +43,7 @@ namespace orangelie
 
 		void Contact::SwapBodies()
 		{
-			DirectX::XMVECTOR ctNormal = DirectX::XMVectorMultiply(DirectX::XMLoadFloat4(&mContactNormal),
-				DirectX::XMVectorReplicate(-1.0f));
-			DirectX::XMStoreFloat4(&mContactNormal, ctNormal);
+			mContactNormal.x *= -1.0f; mContactNormal.y *= -1.0f; mContactNormal.z *= -1.0f;
 
 			RigidBody* tempBody = mBodies[0];
 			mBodies[0] = mBodies[1];
@@ -178,12 +176,50 @@ namespace orangelie
 
 		DirectX::XMFLOAT4 Contact::CalculateFrictionlessImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor)
 		{
+			DirectX::XMFLOAT4 impulseContact = {}, deltaVelWorld = {};
 
+			DirectX::XMStoreFloat4(&deltaVelWorld, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[0]),
+				DirectX::XMLoadFloat4(&mContactNormal)));
+			Utils::MathTool::Transform(deltaVelWorld, inverseInertiaTensor[0], deltaVelWorld);
+			DirectX::XMStoreFloat4(&deltaVelWorld, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&deltaVelWorld),
+				DirectX::XMLoadFloat4(&mRelativeContactPosition[0])));
+
+			float deltaVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat4(&deltaVelWorld),
+				DirectX::XMLoadFloat4(&mContactNormal)));
+			deltaVelocity += mBodies[0]->GetInverseMass();
+
+			
+			if (mBodies[1])
+			{
+				DirectX::XMFLOAT4 deltaVelWorld = {};
+
+				DirectX::XMStoreFloat4(&deltaVelWorld, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[1]),
+					DirectX::XMLoadFloat4(&mContactNormal)));
+				Utils::MathTool::Transform(deltaVelWorld, inverseInertiaTensor[1], deltaVelWorld);
+				DirectX::XMStoreFloat4(&deltaVelWorld, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&deltaVelWorld),
+					DirectX::XMLoadFloat4(&mRelativeContactPosition[1])));
+
+				deltaVelocity += DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat4(&deltaVelWorld),
+					DirectX::XMLoadFloat4(&mContactNormal)));
+				deltaVelocity += mBodies[1]->GetInverseMass();
+			}
+
+			impulseContact.x = mDesiredDeltaVelocity / deltaVelocity;
+			impulseContact.y = 0.0f;
+			impulseContact.z = 0.0f;
+
+			return impulseContact;
 		}
 
 		DirectX::XMFLOAT4 Contact::CalculateFrictionImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor)
 		{
+			DirectX::XMFLOAT4 impulseContact = {};
+			float inverseMass = mBodies[0]->GetInverseMass();
 
+
+
+
+			return impulseContact;
 		}
 	}
 }

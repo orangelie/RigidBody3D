@@ -318,8 +318,9 @@ namespace orangelie
 			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
 			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
 			mRigidBody.SetDamping(0.95f, 0.8f);
-			mRigidBody.SetRotation(0.0f, 1.5f, 0.0f);
+			mRigidBody.SetRotation(5.8f, 10.5f, 0.0f);
 			mRigidBody.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
+			mRigidBody.AddForce(200.0f, 0.0f, 0.0f);
 			
 			DirectX::XMFLOAT4X4 inertiaTensor = {};
 			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };

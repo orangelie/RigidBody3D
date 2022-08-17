@@ -81,6 +81,13 @@ namespace orangelie
 			mTorqueAccum.x = mTorqueAccum.y = mTorqueAccum.z = 0.0f;
 		}
 
+		void RigidBody::AddForce(float x, float y, float z)
+		{
+			mForceAccum.x += x;
+			mForceAccum.y += y;
+			mForceAccum.z += z;
+		}
+
 		void RigidBody::SetPosition(const float x, const float y, const float z)
 		{
 			mPosition.x = x;
@@ -177,6 +184,11 @@ namespace orangelie
 			Velocity.x = mVelocity.x;
 			Velocity.y = mVelocity.y;
 			Velocity.z = mVelocity.z;
+		}
+
+		float RigidBody::GetInverseMass() const
+		{
+			return mInverseMass;
 		}
 
 		bool RigidBody::GetAwake() const
