@@ -50,6 +50,18 @@ namespace Utils
             Out.z = M.m[0][2] * V.x + M.m[1][2] * V.y + M.m[2][2] * V.z;
         }
 
+        DirectX::XMFLOAT4X4 SetSkewSymmetric(const DirectX::XMFLOAT4& V)
+        {
+            DirectX::XMFLOAT4X4 M = {};
+            
+            M.m[0][0] = 0;      M.m[0][1] = -V.z;   M.m[0][2] = V.y;   M.m[0][3] = 0;
+            M.m[1][0] = V.z;    M.m[1][1] = 0;      M.m[1][2] = -V.x;  M.m[1][3] = 0;
+            M.m[2][0] = -V.y;   M.m[2][1] = V.x;    M.m[2][2] = 0;     M.m[2][3] = 0;
+            M.m[3][0] = 0;      M.m[3][1] = 0;      M.m[3][2] = 0;     M.m[3][3] = 1;
+
+            return M;
+        }
+
         void InertiaTensorCoeffs(DirectX::XMFLOAT4X4& InertiaTensor, float ix, float iy, float iz, float ixy, float ixz, float iyz)
         {
             InertiaTensor.m[0][0] = ix;     InertiaTensor.m[0][1] = -ixy;   InertiaTensor.m[0][2] = -ixz;   InertiaTensor.m[0][3] = 0;

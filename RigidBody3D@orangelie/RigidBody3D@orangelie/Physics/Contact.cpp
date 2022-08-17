@@ -166,7 +166,44 @@ namespace orangelie
 
 		void Contact::ApplyVelocityChange(DirectX::XMFLOAT4 velocityChange[2], DirectX::XMFLOAT4 rotationChange[2])
 		{
+			DirectX::XMFLOAT4X4 inverseInertiaTensorWorld[2] = {};
+			DirectX::XMFLOAT4 impulseContact = {};
 
+			mBodies[0]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[0]);
+			mBodies[1]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[1]);
+
+			if (mFriction == 0.0f)
+			{
+				impulseContact = CalculateFrictionlessImpulse(inverseInertiaTensorWorld);
+			}
+			else
+			{
+				impulseContact = CalculateFrictionImpulse(inverseInertiaTensorWorld);
+			}
+
+			DirectX::XMFLOAT4 impulse = {};
+			Utils::MathTool::Transform(impulse, mContactToWorld, impulseContact);
+
+			DirectX::XMFLOAT4 impulsiveTorque = {};
+			DirectX::XMStoreFloat4(&impulsiveTorque, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[0]), DirectX::XMLoadFloat4(&impulse)));
+			Utils::MathTool::Transform(rotationChange[0], inverseInertiaTensorWorld[0], impulsiveTorque);
+			velocityChange[0].x = velocityChange[0].y = velocityChange[0].z = 0.0f;
+			Utils::MathTool::AddScaledVector(velocityChange[0], impulse, mBodies[0]->GetInverseMass());
+
+			mBodies[0]->AddVelocity(velocityChange[0].x, velocityChange[0].y, velocityChange[0].z);
+			mBodies[0]->AddRotation(rotationChange[0].x, rotationChange[0].y, rotationChange[0].z);
+
+			if (mBodies[1])
+			{
+				DirectX::XMFLOAT4 impulsiveTorque = {};
+				DirectX::XMStoreFloat4(&impulsiveTorque, DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&impulse), DirectX::XMLoadFloat4(&mRelativeContactPosition[1])));
+				Utils::MathTool::Transform(rotationChange[1], inverseInertiaTensorWorld[1], impulsiveTorque);
+				velocityChange[1].x = velocityChange[1].y = velocityChange[1].z = 0.0f;
+				Utils::MathTool::AddScaledVector(velocityChange[1], impulse, -mBodies[1]->GetInverseMass());
+
+				mBodies[0]->AddVelocity(velocityChange[1].x, velocityChange[1].y, velocityChange[1].z);
+				mBodies[0]->AddRotation(rotationChange[1].x, rotationChange[1].y, rotationChange[1].z);
+			}
 		}
 
 		void Contact::ApplyPositionChange(DirectX::XMFLOAT4 linearChange[2], DirectX::XMFLOAT4 angularChange[2], float penetration)
@@ -216,8 +253,55 @@ namespace orangelie
 			DirectX::XMFLOAT4 impulseContact = {};
 			float inverseMass = mBodies[0]->GetInverseMass();
 
+			DirectX::XMFLOAT4X4 impulseToTorque = Utils::MathTool::SetSkewSymmetric(mRelativeContactPosition[0]);
 
+			DirectX::XMMATRIX deltaVelWorld1 = DirectX::XMLoadFloat4x4(&impulseToTorque);
+			deltaVelWorld1 *= DirectX::XMLoadFloat4x4(&inverseInertiaTensor[0]);
+			deltaVelWorld1 *= DirectX::XMLoadFloat4x4(&impulseToTorque);
+			deltaVelWorld1 *= -1.0f;
 
+			if (mBodies[1])
+			{
+				impulseToTorque = Utils::MathTool::SetSkewSymmetric(mRelativeContactPosition[1]);
+
+				DirectX::XMMATRIX deltaVelWorld2 = DirectX::XMLoadFloat4x4(&impulseToTorque);
+				deltaVelWorld2 *= DirectX::XMLoadFloat4x4(&inverseInertiaTensor[0]);
+				deltaVelWorld2 *= DirectX::XMLoadFloat4x4(&impulseToTorque);
+				deltaVelWorld2 *= -1.0f;
+
+				deltaVelWorld1 += deltaVelWorld2;
+				inverseMass += mBodies[1]->GetInverseMass();
+			}
+
+			DirectX::XMMATRIX contactToWorld = DirectX::XMLoadFloat4x4(&mContactToWorld);
+
+			DirectX::XMMATRIX deltaVelocity = DirectX::XMMatrixTranspose(contactToWorld);
+			deltaVelocity *= deltaVelWorld1;
+			deltaVelocity *= contactToWorld;
+
+			DirectX::XMFLOAT4X4 deltaVelocityF = {};
+			DirectX::XMStoreFloat4x4(&deltaVelocityF, deltaVelocity);
+			deltaVelocityF.m[0][0] += inverseMass;
+			deltaVelocityF.m[1][1] += inverseMass;
+			deltaVelocityF.m[2][2] += inverseMass;
+
+			DirectX::XMFLOAT4X4 impulseMatrix = {};
+			DirectX::XMStoreFloat4x4(&impulseMatrix, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(DirectX::XMLoadFloat4x4(&deltaVelocityF)), DirectX::XMLoadFloat4x4(&deltaVelocityF)));
+
+			DirectX::XMFLOAT4 velKill = { mDesiredDeltaVelocity, -mContactVelocity.y,  -mContactVelocity.z, 0.0f };
+			Utils::MathTool::Transform(impulseContact, impulseMatrix, velKill);
+
+			float planarImpulse = std::sqrtf(impulseContact.y * impulseContact.y + impulseContact.z * impulseContact.z);
+			if (planarImpulse > impulseContact.x * mFriction)
+			{
+				impulseContact.y /= planarImpulse;
+				impulseContact.z /= planarImpulse;
+
+				impulseContact.x = deltaVelocityF.m[0][0] + deltaVelocityF.m[0][1] * mFriction * impulseContact.y + deltaVelocityF.m[0][2] * mFriction * impulseContact.z;
+				impulseContact.x = mDesiredDeltaVelocity / impulseContact.x;
+				impulseContact.y *= impulseContact.x * mFriction;
+				impulseContact.z *= impulseContact.x * mFriction;
+			}
 
 			return impulseContact;
 		}

@@ -65,6 +65,7 @@ namespace Utils
         void AddScaledQuaternion(DirectX::XMFLOAT4& Q, const DirectX::XMFLOAT4& V, float scale);
         void Transform(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V);
         void TransformTranspose(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V);
+        DirectX::XMFLOAT4X4 SetSkewSymmetric(const DirectX::XMFLOAT4& V);
         void InertiaTensorCoeffs(DirectX::XMFLOAT4X4& InertiaTensor,float ix, float iy, float iz, float ixy = 0.0f, float ixz = 0.0f, float iyz = 0.0f);
         void BlockInertiaTensor(DirectX::XMFLOAT4X4& InertiaTensor, const DirectX::XMFLOAT4& halfSizes, const float& mass);
         void SetComponents(DirectX::XMFLOAT4X4& Comp, const DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, const DirectX::XMFLOAT4& V3);

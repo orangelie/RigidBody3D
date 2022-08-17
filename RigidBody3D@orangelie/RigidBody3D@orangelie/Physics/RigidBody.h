@@ -33,6 +33,9 @@ namespace orangelie
 			void SetDamping(const float linearDamping, const float angularDamping);
 			void SetInertiaTensor(const DirectX::XMFLOAT4X4& InertiaTensor);
 
+			void AddVelocity(const float x, const float y, const float z);
+			void AddRotation(const float x, const float y, const float z);
+
 			void GetPosition(DirectX::XMFLOAT4& Position);
 			void GetRotation(DirectX::XMFLOAT4& Rotation);
 			void GetVelocity(DirectX::XMFLOAT4& Velocity);
@@ -40,6 +43,7 @@ namespace orangelie
 			bool GetAwake() const;
 			void GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration);
 			void GetTransform(DirectX::XMFLOAT4X4& transformMatrix);
+			void GetInverseInertiaTensorWorld(DirectX::XMFLOAT4X4& InertiaTensor);
 
 		private:
 			// 질량의 역수

@@ -165,6 +165,20 @@ namespace orangelie
 			DirectX::XMStoreFloat4x4(&mInverseInertiaTensor, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(T), T));
 		}
 
+		void RigidBody::AddVelocity(const float x, const float y, const float z)
+		{
+			mVelocity.x += x;
+			mVelocity.y += y;
+			mVelocity.z += z;
+		}
+
+		void RigidBody::AddRotation(const float x, const float y, const float z)
+		{
+			mRotation.x += x;
+			mRotation.y += y;
+			mRotation.z += z;
+		}
+
 		void RigidBody::GetPosition(DirectX::XMFLOAT4& Position)
 		{
 			Position.x = mPosition.x;
@@ -207,6 +221,11 @@ namespace orangelie
 		{
 			DirectX::XMMATRIX T = DirectX::XMLoadFloat4x4(&mTransformMatrix);
 			DirectX::XMStoreFloat4x4(&transformMatrix, DirectX::XMMatrixTranspose(T));
+		}
+
+		void RigidBody::GetInverseInertiaTensorWorld(DirectX::XMFLOAT4X4& InertiaTensor)
+		{
+			InertiaTensor = mInverseInertiaTensorWorld;
 		}
 	}
 }
