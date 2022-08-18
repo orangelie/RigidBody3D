@@ -39,6 +39,7 @@ namespace orangelie
 			void GetPosition(DirectX::XMFLOAT4& Position);
 			void GetRotation(DirectX::XMFLOAT4& Rotation);
 			void GetVelocity(DirectX::XMFLOAT4& Velocity);
+			void GetOrientation(DirectX::XMFLOAT4& orientation);
 			float GetInverseMass() const;
 			bool GetAwake() const;
 			void GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration);

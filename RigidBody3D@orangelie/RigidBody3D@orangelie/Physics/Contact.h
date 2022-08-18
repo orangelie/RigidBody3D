@@ -78,10 +78,33 @@ namespace orangelie
 
 		class ContactResolver
 		{
-		public:
+		protected:
+			unsigned mVelocityIterations;
+			unsigned mPositionIterations;
 
+			float mVelocityEpsilon;
+			float mPositionEpsilon;
+
+		public:
+			unsigned mVelocityIterationsUsed;
+			unsigned mPositionIterationsUsed;
 
 		private:
+			unsigned mValidSettings;
+
+		public:
+			ContactResolver(unsigned iterations, float velocityEpsilon = 0.01f, float positionEpsilon = 0.01f);
+			ContactResolver(unsigned velocityIterations, unsigned positionIterations, float velocityEpsilon = 0.01f, float positionEpsilon = 0.01f);
+
+			bool isValid()
+			{
+				return ((mVelocityIterations > 0) &&
+					(mPositionIterations > 0) &&
+					(mVelocityEpsilon >= 0.0f) &&
+					(mPositionEpsilon >= 0.0f));
+			}
+
+		protected:
 
 
 		};

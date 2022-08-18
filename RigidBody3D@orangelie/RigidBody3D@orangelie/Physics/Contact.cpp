@@ -208,7 +208,94 @@ namespace orangelie
 
 		void Contact::ApplyPositionChange(DirectX::XMFLOAT4 linearChange[2], DirectX::XMFLOAT4 angularChange[2], float penetration)
 		{
+			const float angularLimit = 0.2f;
+			float totalInertia = 0.0f;
+			float linearMove[2], angularMove[2];
+			float linearInertia[2], angularInertia[2];
 
+			for (unsigned i = 0; i < 2; ++i) if (mBodies[i])
+			{
+				DirectX::XMFLOAT4X4 inverseInertiaTensorWorld;
+				mBodies[i]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld);
+
+				DirectX::XMFLOAT4 angularInertiaWorld;
+				DirectX::XMStoreFloat4(&angularInertiaWorld,
+					DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[i]), DirectX::XMLoadFloat4(&mContactNormal)));
+				Utils::MathTool::Transform(angularInertiaWorld, inverseInertiaTensorWorld, angularInertiaWorld);
+				DirectX::XMStoreFloat4(&angularInertiaWorld,
+					DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&angularInertiaWorld), DirectX::XMLoadFloat4(&mRelativeContactPosition[i])));
+
+				angularInertia[i] = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMLoadFloat4(&angularInertiaWorld), DirectX::XMLoadFloat4(&mContactNormal)));
+				linearInertia[i] = mBodies[i]->GetInverseMass();
+
+				totalInertia += linearInertia[i] + angularInertia[i];
+			}
+
+			for (unsigned i = 0; i < 2; ++i) if (mBodies[i])
+			{
+				float sign = (i == 0) ? 1.0f : -1.0f;
+
+				linearMove[i] = mPenetration * sign * (linearInertia[i] / totalInertia);
+				angularMove[i] = mPenetration * sign * (angularInertia[i] / totalInertia);
+
+				DirectX::XMFLOAT4 projection = mRelativeContactPosition[i];
+
+				Utils::MathTool::AddScaledVector(projection, mContactNormal, -DirectX::XMVectorGetX(
+					DirectX::XMVector3Dot(DirectX::XMLoadFloat4(&mRelativeContactPosition[i]), DirectX::XMLoadFloat4(&mContactNormal))));
+
+
+				float maxMagnitude = angularLimit * DirectX::XMVectorGetX(DirectX::XMVector3Length(DirectX::XMLoadFloat4(&projection)));
+
+				if (angularMove[i] < -maxMagnitude)
+				{
+					float totalMove = linearMove[i] + angularMove[i];
+					angularMove[i] = -maxMagnitude;
+					linearMove[i] = totalMove - angularMove[i];
+
+				}
+				else if (angularMove[i] > maxMagnitude)
+				{
+					float totalMove = linearMove[i] + angularMove[i];
+					angularMove[i] = maxMagnitude;
+					linearMove[i] = totalMove - angularMove[i];
+				}
+
+				if (angularMove[i] == 0)
+				{
+					angularChange[i].x = angularChange[i].y = angularChange[i].z = 0.0f;
+				}
+				else
+				{
+					DirectX::XMFLOAT4X4 inverseInertiaTensorWorld;
+					mBodies[i]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld);
+
+					DirectX::XMFLOAT4 targetAngularDirection;
+					DirectX::XMStoreFloat4(&targetAngularDirection,
+						DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[i]), DirectX::XMLoadFloat4(&mContactNormal)));
+
+					Utils::MathTool::Transform(angularChange[i], inverseInertiaTensorWorld, targetAngularDirection);
+					Utils::MathTool::Scalar(angularChange[i], angularMove[i] / angularInertia[i]);
+				}
+
+
+				linearChange[i].x = mContactNormal.x * linearMove[i];
+				linearChange[i].y = mContactNormal.y * linearMove[i];
+				linearChange[i].z = mContactNormal.z * linearMove[i];
+
+				DirectX::XMFLOAT4 position = {};
+				mBodies[i]->GetPosition(position);
+				Utils::MathTool::AddScaledVector(position, mContactNormal, linearMove[i]);
+				mBodies[i]->SetPosition(position.x, position.y, position.z);
+
+				DirectX::XMFLOAT4 orientation = {};
+				mBodies[i]->GetOrientation(orientation);
+				Utils::MathTool::AddScaledQuaternion(orientation, angularChange[i], 1.0f);
+				mBodies[i]->SetOrientation(orientation.x, orientation.y, orientation.z, orientation.w);
+
+				if (mBodies[i]->GetAwake() == false) {
+					mBodies[i]->CalculateDerivedData();
+				}
+			}
 		}
 
 		DirectX::XMFLOAT4 Contact::CalculateFrictionlessImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor)

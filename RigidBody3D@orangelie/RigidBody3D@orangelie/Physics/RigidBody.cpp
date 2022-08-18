@@ -151,6 +151,8 @@ namespace orangelie
 			mOrientation.y = j;
 			mOrientation.z = k;
 			mOrientation.w = r;
+
+			DirectX::XMStoreFloat4(&mOrientation, DirectX::XMQuaternionNormalize(DirectX::XMLoadFloat4(&mOrientation)));
 		}
 
 		void RigidBody::SetDamping(const float linearDamping, const float angularDamping)
@@ -198,6 +200,14 @@ namespace orangelie
 			Velocity.x = mVelocity.x;
 			Velocity.y = mVelocity.y;
 			Velocity.z = mVelocity.z;
+		}
+
+		void RigidBody::GetOrientation(DirectX::XMFLOAT4& orientation)
+		{
+			orientation.x = mOrientation.x;
+			orientation.y = mOrientation.y;
+			orientation.z = mOrientation.z;
+			orientation.w = mOrientation.w;
 		}
 
 		float RigidBody::GetInverseMass() const
