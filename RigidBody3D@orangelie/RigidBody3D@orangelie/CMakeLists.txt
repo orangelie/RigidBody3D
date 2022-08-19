@@ -34,7 +34,8 @@ set(FONT "Font.h" "Font.cpp")
 
 set(RIGIDBODY "Physics/RigidBody.cpp" "Physics/RigidBody.h")
 set(CONTACT "Physics/Contact.cpp" "Physics/Contact.h")
-set(PHYSICS ${RIGIDBODY} ${CONTACT})
+set(COLLIDEFINE "Physics/CollideFine.cpp" "Physics/CollideFine.h")
+set(PHYSICS "Physics/Physics.h" ${RIGIDBODY} ${CONTACT} ${COLLIDEFINE})
 
 add_executable (RigidBody3D "main.cpp" "Test/RigidBodySim.h" "UploadBuffer.h" ${DEPENDENCIES} ${UTILITIES} ${DXGI_RENDERER} ${GAMETIMER} ${GEOMETRYGENN} ${FRAMERESOURCE_DF} ${CAMERA} ${FONT} ${PHYSICS})
 include_directories(RigidBody3D "./Dependencies")

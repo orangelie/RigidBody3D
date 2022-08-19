@@ -32,6 +32,7 @@ namespace orangelie
 			void SetOrientation(const float i, const float j, const float k, const float r);
 			void SetDamping(const float linearDamping, const float angularDamping);
 			void SetInertiaTensor(const DirectX::XMFLOAT4X4& InertiaTensor);
+			void SetGravity(const bool isGravity);
 
 			void AddVelocity(const float x, const float y, const float z);
 			void AddRotation(const float x, const float y, const float z);
@@ -60,6 +61,7 @@ namespace orangelie
 			bool mIsAwake = false;
 			// 강체가 잠들지 못하도록 합니다.
 			bool mCanSleep = false;
+			bool mIsGravity = false;
 
 			// 세계공간에서의 강체의 위치
 			DirectX::XMFLOAT4 mPosition = {};

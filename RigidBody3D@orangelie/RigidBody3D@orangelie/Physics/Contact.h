@@ -104,8 +104,16 @@ namespace orangelie
 					(mPositionEpsilon >= 0.0f));
 			}
 
-		protected:
+			void SetIterations(unsigned iterations);
+			void SetIterations(unsigned velocityIterations, unsigned positionIterations);
+			void SetEpsilon(float velocityEpsilon, float positionEpsilon);
 
+			void ResolveContacts(Contact* contactArray, unsigned numContacts, float dt);
+
+		protected:
+			void PrepareContacts(Contact* contactArray, unsigned numContacts, float dt);
+			void AdjustPositions(Contact* contactArray, unsigned numContacts, float dt);
+			void AdjustVelocities(Contact* contactArray, unsigned numContacts, float dt);
 
 		};
 	}

@@ -45,7 +45,16 @@ namespace orangelie
 			Utils::MathTool::Transform(angularAcceleration, mInverseInertiaTensorWorld, mTorqueAccum);
 			
 			// Velocity Update
-			Utils::MathTool::AddScaledVector(mVelocity, mLastframeAcceleration, dt);
+			if (mIsGravity)
+			{
+				DirectX::XMFLOAT4 lastFrameAcceleration = mLastframeAcceleration;
+				lastFrameAcceleration.y += -9.80665f;
+				Utils::MathTool::AddScaledVector(mVelocity, lastFrameAcceleration, dt);
+			}
+			else
+			{
+				Utils::MathTool::AddScaledVector(mVelocity, mLastframeAcceleration, dt);
+			}
 			Utils::MathTool::AddScaledVector(mRotation, angularAcceleration, dt);
 
 			// Velocity Drag Damping
@@ -165,6 +174,11 @@ namespace orangelie
 		{
 			DirectX::XMMATRIX T = DirectX::XMLoadFloat4x4(&InertiaTensor);
 			DirectX::XMStoreFloat4x4(&mInverseInertiaTensor, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(T), T));
+		}
+
+		void RigidBody::SetGravity(const bool isGravity)
+		{
+			mIsGravity = isGravity;
 		}
 
 		void RigidBody::AddVelocity(const float x, const float y, const float z)

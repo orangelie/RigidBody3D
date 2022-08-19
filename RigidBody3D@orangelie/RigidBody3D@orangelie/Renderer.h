@@ -6,8 +6,7 @@
 #include "Test/FrameResource/RigidBodySim/FrameResource.h"
 #include "Camera.h"
 #include "Font.h"
-
-#include "Physics/RigidBody.h"
+#include "Physics/Physics.h"
 
 
 namespace orangelie

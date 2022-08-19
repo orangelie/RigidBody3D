@@ -15,6 +15,7 @@ namespace orangelie
 	{
 	private:
 		Physics::RigidBody mRigidBody;
+		Physics::ContactResolver* mContactResolver;
 
 
 		std::unordered_map<std::string, std::vector<Shader::FontType>> mFontData;
@@ -311,21 +312,6 @@ namespace orangelie
 			mRenderLayer[(size_t)Shader::RenderLayer::Opaque].push_back(quadRitem.get());
 			mAllRenderItems.push_back(std::move(quadRitem));
 
-			mRigidBody.setSleep(false);
-			mRigidBody.setAwake(true);
-			mRigidBody.SetMass(8.0f);
-			mRigidBody.SetVelocity(0.0f, 0.0f, 0.0f);
-			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
-			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
-			mRigidBody.SetDamping(0.95f, 0.8f);
-			mRigidBody.SetRotation(5.8f, 10.5f, 0.0f);
-			mRigidBody.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
-			mRigidBody.AddForce(200.0f, 0.0f, 0.0f);
-			
-			DirectX::XMFLOAT4X4 inertiaTensor = {};
-			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };
-			Utils::MathTool::BlockInertiaTensor(inertiaTensor, halfSize, halfSize.x * halfSize.y * halfSize.z * 8.0f);
-			mRigidBody.SetInertiaTensor(inertiaTensor);
 
 			auto textRitem = std::make_unique<Shader::RenderItem>();
 			textRitem->ObjIndex = 1;
@@ -340,6 +326,26 @@ namespace orangelie
 			mTextVB = textRitem.get();
 			mRenderLayer[(size_t)Shader::RenderLayer::Text].push_back(textRitem.get());
 			mAllRenderItems.push_back(std::move(textRitem));
+		}
+
+		void BuildRigidBodies()
+		{
+			mRigidBody.setSleep(false);
+			mRigidBody.setAwake(true);
+			mRigidBody.SetMass(8.0f);
+			mRigidBody.SetVelocity(0.0f, 0.0f, 0.0f);
+			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
+			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
+			mRigidBody.SetDamping(0.95f, 0.8f);
+			mRigidBody.SetRotation(5.8f, 10.5f, 0.0f);
+			mRigidBody.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
+			mRigidBody.AddForce(200.0f, 0.0f, 0.0f);
+			mRigidBody.SetGravity(true);
+
+			DirectX::XMFLOAT4X4 inertiaTensor = {};
+			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };
+			Utils::MathTool::BlockInertiaTensor(inertiaTensor, halfSize, halfSize.x * halfSize.y * halfSize.z * 8.0f);
+			mRigidBody.SetInertiaTensor(inertiaTensor);
 		}
 
 		void BuildFrameResources()
@@ -420,14 +426,17 @@ namespace orangelie
 			HR(mDevice->CreateGraphicsPipelineState(&textPSODescriptor, IID_PPV_ARGS(mGraphicsPSO["text"].GetAddressOf())));
 		}
 
-		void UpdateObjectCB()
+		void UpdateRigidBodies()
 		{
 			mRigidBody.Integrate(mGameTimer.DeltaTime());
 
 			DirectX::XMFLOAT4X4 mat = {}; mRigidBody.GetTransform(mat);
 			mBoxVB->World = mat;
 			mBoxVB->NumframeDirty = Shader::gNumFrameResources;
+		}
 
+		void UpdateObjectCB()
+		{
 			for (auto& e : mAllRenderItems)
 			{
 				if (e->NumframeDirty > 0)
@@ -558,6 +567,7 @@ namespace orangelie
 			BuildShapeMesh();
 			BuildFont();
 			BuildRenderItems();
+			BuildRigidBodies();
 			BuildFrameResources();
 			BuildPSOs();
 
@@ -583,6 +593,7 @@ namespace orangelie
 				CloseHandle(hEvent);
 			}
 
+			UpdateRigidBodies();
 			UpdateObjectCB();
 			UpdatePassCB();
 			UpdateTextVB();

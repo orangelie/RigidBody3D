@@ -392,5 +392,163 @@ namespace orangelie
 
 			return impulseContact;
 		}
+
+
+		ContactResolver::ContactResolver(unsigned iterations, float velocityEpsilon, float positionEpsilon)
+		{
+			SetIterations(iterations);
+			SetEpsilon(velocityEpsilon, positionEpsilon);
+		}
+
+		ContactResolver::ContactResolver(unsigned velocityIterations, unsigned positionIterations, float velocityEpsilon, float positionEpsilon)
+		{
+			SetIterations(velocityIterations, positionIterations);
+			SetEpsilon(velocityEpsilon, positionEpsilon);
+		}
+
+		void ContactResolver::SetIterations(unsigned iterations)
+		{
+			SetIterations(iterations, iterations);
+		}
+
+		void ContactResolver::SetIterations(unsigned velocityIterations, unsigned positionIterations)
+		{
+			mVelocityIterations = velocityIterations;
+			mPositionIterations = positionIterations;
+		}
+
+		void ContactResolver::SetEpsilon(float velocityEpsilon, float positionEpsilon)
+		{
+			mVelocityEpsilon = velocityEpsilon;
+			mPositionEpsilon = positionEpsilon;
+		}
+
+		void ContactResolver::ResolveContacts(Contact* contactArray, unsigned numContacts, float dt)
+		{
+			if (numContacts <= 0)
+				return;
+			if (!isValid())
+				return;
+
+			PrepareContacts(contactArray, numContacts, dt);
+			AdjustPositions(contactArray, numContacts, dt);
+			AdjustVelocities(contactArray, numContacts, dt);
+		}
+
+		void ContactResolver::PrepareContacts(Contact* contactArray, unsigned numContacts, float dt)
+		{
+			Contact* lastContact = contactArray + numContacts;
+
+			for (Contact* contact = contactArray; contact < lastContact; ++contact)
+			{
+				contact->CalculateInternals(dt);
+			}
+		}
+
+		void ContactResolver::AdjustPositions(Contact* contactArray, unsigned numContacts, float dt)
+		{
+			using namespace DirectX;
+
+			DirectX::XMFLOAT4 linearChange[2] = {}, angularChange[2] = {};
+			DirectX::XMVECTOR deltaVel = {};
+
+			mPositionIterationsUsed = 0;
+			while (mPositionIterationsUsed < mPositionIterations)
+			{
+				float max = mPositionEpsilon;
+				unsigned index = numContacts;
+
+				for (unsigned i = 0; i < numContacts; ++i)
+				{
+					if (contactArray[i].mPenetration > max)
+					{
+						max = contactArray[i].mPenetration;
+						index = i;
+					}
+				}
+
+				if (index == numContacts)
+					break;
+
+				contactArray[index].MatchAwakeState();
+				contactArray[index].ApplyPositionChange(linearChange, angularChange, max);
+
+
+				for (unsigned i = 0; i < numContacts; ++i)
+				{
+					for (unsigned b = 0; b < 2; ++b) if(contactArray[i].mBodies[b])
+					{
+						for (unsigned d = 0; d < 2; ++d)
+						{
+							if (contactArray[i].mBodies[b] == contactArray[index].mBodies[d])
+							{
+								deltaVel = DirectX::XMLoadFloat4(&linearChange[d]) + DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&angularChange[d]),
+									DirectX::XMLoadFloat4(&contactArray[i].mRelativeContactPosition[b]));
+
+								contactArray[i].mPenetration += DirectX::XMVectorGetX(DirectX::XMVector3Dot(deltaVel,
+									DirectX::XMLoadFloat4(&contactArray[i].mContactNormal))) * (b ? 1.0f : -1.0f);
+							}
+						}
+					}
+				}
+
+				++mPositionIterationsUsed;
+			}
+		}
+
+		void ContactResolver::AdjustVelocities(Contact* contactArray, unsigned numContacts, float dt)
+		{
+			using namespace DirectX;
+
+			DirectX::XMFLOAT4 velocityChange[2] = {}, rotationChange[2] = {};
+			DirectX::XMFLOAT4 deltaVel = {}, tmpVel = {};
+
+			mVelocityIterationsUsed = 0;
+			while (mVelocityIterationsUsed < mVelocityIterations)
+			{
+				float max = mVelocityEpsilon;
+				unsigned index = numContacts;
+
+				for (unsigned i = 0; i < numContacts; ++i)
+				{
+					if (contactArray[i].mDesiredDeltaVelocity > max)
+					{
+						max = contactArray[i].mDesiredDeltaVelocity;
+						index = i;
+					}
+				}
+
+				if (index == numContacts)
+					break;
+
+				contactArray[index].MatchAwakeState();
+				contactArray[index].ApplyVelocityChange(velocityChange, rotationChange);
+
+
+				for (unsigned i = 0; i < numContacts; ++i)
+				{
+					for (unsigned b = 0; b < 2; ++b) if (contactArray[i].mBodies[b])
+					{
+						for (unsigned d = 0; d < 2; ++d)
+						{
+							if (contactArray[i].mBodies[b] == contactArray[index].mBodies[d])
+							{
+								DirectX::XMStoreFloat4(&deltaVel, DirectX::XMLoadFloat4(&velocityChange[d]) + DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&rotationChange[d]),
+									DirectX::XMLoadFloat4(&contactArray[i].mRelativeContactPosition[b])));
+
+								Utils::MathTool::TransformTranspose(tmpVel, contactArray[i].mContactToWorld, deltaVel);
+								contactArray[i].mContactVelocity.x += tmpVel.x * (b ? -1.0f : 1.0f);
+								contactArray[i].mContactVelocity.y += tmpVel.y * (b ? -1.0f : 1.0f);
+								contactArray[i].mContactVelocity.z += tmpVel.z * (b ? -1.0f : 1.0f);
+
+								contactArray[i].CalculateDesiredDeltaVelocity(dt);
+							}
+						}
+					}
+				}
+
+				++mVelocityIterationsUsed;
+			}
+		}
 	}
 }
