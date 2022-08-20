@@ -23,7 +23,7 @@ namespace orangelie
 				return (contactsLeft > 0);
 			}
 
-			void reset(int maxContacts)
+			void Reset(int maxContacts)
 			{
 				contactsLeft = maxContacts;
 				contactCount = 0;
