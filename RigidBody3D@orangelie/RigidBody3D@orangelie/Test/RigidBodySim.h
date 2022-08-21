@@ -14,14 +14,20 @@ namespace orangelie
 	class RigidBodySim : public Renderer
 	{
 	private:
-		Physics::RigidBody mRigidBody;
-		Physics::ContactResolver* mContactResolver;
+		Physics::RigidBody mRigidBody1;
+		Physics::RigidBody mRigidBody2;
+		Physics::CollisionBox mCBox1;
+		Physics::CollisionBox mCBox2;
+		Physics::Contact mContact[256] = {};
+		Physics::CollisionData mCData;
+		std::unique_ptr<Physics::ContactResolver> mContactResolver;
 
 
 		std::unordered_map<std::string, std::vector<Shader::FontType>> mFontData;
 		const static int gMaxNumTextCharacters = 256;	//< Must be greater than 256 and must be a multiple of 16 >//
 		Shader::RenderItem* mTextVB = nullptr;
-		Shader::RenderItem* mBoxVB = nullptr;
+		Shader::RenderItem* mBox1VB = nullptr;
+		Shader::RenderItem* mBox2VB = nullptr;
 
 		Camera mCamera;
 		std::vector<std::unique_ptr<FrameResource>> mFrameResources;
@@ -182,8 +188,8 @@ namespace orangelie
 		void BuildShapeMesh()
 		{
 			GeometryGenerator geoGen;
-			GeometryGenerator::MeshData box = geoGen.CreateBox(1.5f, 1.5f, 1.5f, 3);
-			GeometryGenerator::MeshData sphere = geoGen.CreateSphere(0.5f, 20, 20);
+			GeometryGenerator::MeshData box = geoGen.CreateBox(2.0f, 2.0f, 2.0f, 3);
+			GeometryGenerator::MeshData sphere = geoGen.CreateSphere(1.0f, 20, 20);
 
 			UINT k = 0;
 			std::vector<Shader::Vertex> vertices(box.Vertices.size() + sphere.Vertices.size());
@@ -297,24 +303,39 @@ namespace orangelie
 
 		void BuildRenderItems()
 		{
-			auto quadRitem = std::make_unique<Shader::RenderItem>();
-			quadRitem->ObjIndex = 0;
-			DirectX::XMStoreFloat4x4(&quadRitem->World, DirectX::XMMatrixTranslation(0.0f, 0.0f, 30.0f));
-			quadRitem->TexTransform = Utils::MatrixIdentity();
-			quadRitem->Mat = mMaterials["wood"].get();
-			quadRitem->meshGeo = mDrawArgs["shapeGeo"].get();
-			quadRitem->IndexCount = quadRitem->meshGeo->DrawArgs["box"].IndexCount;
-			quadRitem->BaseVertexLocation = quadRitem->meshGeo->DrawArgs["box"].BaseVertexLocation;
-			quadRitem->StartIndexLocation = quadRitem->meshGeo->DrawArgs["box"].StartIndexLocation;
-			quadRitem->PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			auto quadRitem1 = std::make_unique<Shader::RenderItem>();
+			quadRitem1->ObjIndex = 0;
+			DirectX::XMStoreFloat4x4(&quadRitem1->World, DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+			quadRitem1->TexTransform = Utils::MatrixIdentity();
+			quadRitem1->Mat = mMaterials["wood"].get();
+			quadRitem1->meshGeo = mDrawArgs["shapeGeo"].get();
+			quadRitem1->IndexCount = quadRitem1->meshGeo->DrawArgs["box"].IndexCount;
+			quadRitem1->BaseVertexLocation = quadRitem1->meshGeo->DrawArgs["box"].BaseVertexLocation;
+			quadRitem1->StartIndexLocation = quadRitem1->meshGeo->DrawArgs["box"].StartIndexLocation;
+			quadRitem1->PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-			mBoxVB = quadRitem.get();
-			mRenderLayer[(size_t)Shader::RenderLayer::Opaque].push_back(quadRitem.get());
-			mAllRenderItems.push_back(std::move(quadRitem));
+			mBox1VB = quadRitem1.get();
+			mRenderLayer[(size_t)Shader::RenderLayer::Opaque].push_back(quadRitem1.get());
+			mAllRenderItems.push_back(std::move(quadRitem1));
+
+			auto quadRitem2 = std::make_unique<Shader::RenderItem>();
+			quadRitem2->ObjIndex = 1;
+			DirectX::XMStoreFloat4x4(&quadRitem2->World, DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f));
+			quadRitem2->TexTransform = Utils::MatrixIdentity();
+			quadRitem2->Mat = mMaterials["wood"].get();
+			quadRitem2->meshGeo = mDrawArgs["shapeGeo"].get();
+			quadRitem2->IndexCount = quadRitem2->meshGeo->DrawArgs["box"].IndexCount;
+			quadRitem2->BaseVertexLocation = quadRitem2->meshGeo->DrawArgs["box"].BaseVertexLocation;
+			quadRitem2->StartIndexLocation = quadRitem2->meshGeo->DrawArgs["box"].StartIndexLocation;
+			quadRitem2->PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+			mBox2VB = quadRitem2.get();
+			mRenderLayer[(size_t)Shader::RenderLayer::Opaque].push_back(quadRitem2.get());
+			mAllRenderItems.push_back(std::move(quadRitem2));
 
 
 			auto textRitem = std::make_unique<Shader::RenderItem>();
-			textRitem->ObjIndex = 1;
+			textRitem->ObjIndex = 2;
 			textRitem->TexTransform = Utils::MatrixIdentity();
 			textRitem->Mat = mMaterials["text"].get();
 			textRitem->meshGeo = mDrawArgs["textGeo"].get();
@@ -330,22 +351,42 @@ namespace orangelie
 
 		void BuildRigidBodies()
 		{
-			mRigidBody.setSleep(false);
-			mRigidBody.setAwake(true);
-			mRigidBody.SetMass(8.0f);
-			mRigidBody.SetVelocity(0.0f, 0.0f, 0.0f);
-			mRigidBody.SetAcceleration(0.2f, 0.0f, 0.0f);
-			mRigidBody.SetPosition(0.0f, 0.0f, 10.0f);
-			mRigidBody.SetDamping(0.95f, 0.8f);
-			mRigidBody.SetRotation(5.8f, 10.5f, 0.0f);
-			mRigidBody.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
-			mRigidBody.AddForce(200.0f, 0.0f, 0.0f);
-			mRigidBody.SetGravity(true);
+			mCData.contactArray = mContact;
+
+			mRigidBody1.setSleep(false);
+			mRigidBody1.setAwake(true);
+			mRigidBody1.SetMass(8.0f);
+			mRigidBody1.SetVelocity(0.0f, 0.0f, 0.0f);
+			mRigidBody1.SetAcceleration(5.0f, 0.0f, 0.0f);
+			mRigidBody1.SetPosition(0.0f, 0.0f, 10.0f);
+			mRigidBody1.SetDamping(0.95f, 0.8f);
+			mRigidBody1.SetRotation(0.0f, 0.0f, 0.0f);
+			mRigidBody1.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
+			mRigidBody1.AddForce(50.0f, 0.0f, 0.0f);
+			mRigidBody1.SetGravity(false);
 
 			DirectX::XMFLOAT4X4 inertiaTensor = {};
 			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };
 			Utils::MathTool::BlockInertiaTensor(inertiaTensor, halfSize, halfSize.x * halfSize.y * halfSize.z * 8.0f);
-			mRigidBody.SetInertiaTensor(inertiaTensor);
+			mRigidBody1.SetInertiaTensor(inertiaTensor);
+
+
+
+			mRigidBody2.setSleep(false);
+			mRigidBody2.setAwake(true);
+			mRigidBody2.SetMass(8.0f);
+			mRigidBody2.SetVelocity(0.0f, 0.0f, 0.0f);
+			mRigidBody2.SetAcceleration(-5.0f, 0.0f, 0.0f);
+			mRigidBody2.SetPosition(10.0f, 0.0f, 10.0f);
+			mRigidBody2.SetDamping(0.95f, 0.8f);
+			mRigidBody2.SetRotation(0.0f, 0.0f, 0.0f);
+			mRigidBody2.SetOrientation(0.0f, 0.0f, 0.0f, 1.0f);
+			mRigidBody2.AddForce(50.0f, 0.0f, 0.0f);
+			mRigidBody2.SetGravity(false);
+
+			mRigidBody2.SetInertiaTensor(inertiaTensor);
+
+			mContactResolver = std::make_unique<Physics::ContactResolver>(256 * 8);
 		}
 
 		void BuildFrameResources()
@@ -426,13 +467,63 @@ namespace orangelie
 			HR(mDevice->CreateGraphicsPipelineState(&textPSODescriptor, IID_PPV_ARGS(mGraphicsPSO["text"].GetAddressOf())));
 		}
 
-		void UpdateRigidBodies()
+		void CollisionDetection()
 		{
-			mRigidBody.Integrate(mGameTimer.DeltaTime());
+			if (!mCData.HasMoreContacts())
+				return;
 
-			DirectX::XMFLOAT4X4 mat = {}; mRigidBody.GetTransform(mat);
-			mBoxVB->World = mat;
-			mBoxVB->NumframeDirty = Shader::gNumFrameResources;
+			Physics::CollisionDetector::BoxAndBox(mCBox1, mCBox2, &mCData);
+
+			if (!mCData.HasMoreContacts())
+				return;
+
+			 // Physics::CollisionDetector::BoxAndBox(mCBox2, mCBox1, &mCData);
+		}
+
+		void UpdateRigidBodies(float dt)
+		{
+			// duration
+			float duration = dt;
+
+			// integrate
+			mRigidBody1.Integrate(duration);
+
+			DirectX::XMFLOAT4X4 mat = {}; mRigidBody1.GetTransform(mat);
+			XMStoreFloat4x4(&mBox1VB->World, XMMatrixTranspose(XMLoadFloat4x4(&mat)));
+			mBox1VB->NumframeDirty = Shader::gNumFrameResources;
+
+			mRigidBody2.Integrate(duration);
+
+			mat = {}; mRigidBody2.GetTransform(mat);
+			XMStoreFloat4x4(&mBox2VB->World, XMMatrixTranspose(XMLoadFloat4x4(&mat)));
+			mBox2VB->NumframeDirty = Shader::gNumFrameResources;
+
+			// generate contacts
+			mCData.Reset(256);
+			mCData.friction = 0.9f;
+			mCData.restitution = 0.1f;
+			mCData.tolerance = 0.1f;
+
+			// generate collision boxes
+			DirectX::XMFLOAT4 halfSize = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+			DirectX::XMFLOAT4X4 transform1 = {};
+			mRigidBody1.GetTransform(transform1);
+			mCBox1.SetTransform(transform1);
+			mCBox1.mHalfSize = halfSize;
+			mCBox1.mBody = &mRigidBody1;
+
+			DirectX::XMFLOAT4X4 transform2 = {};
+			mRigidBody2.GetTransform(transform2);
+			mCBox2.SetTransform(transform2);
+			mCBox2.mHalfSize = halfSize;
+			mCBox2.mBody = &mRigidBody2;
+
+			// collision detection
+			CollisionDetection();
+
+			// contact resolve
+			mContactResolver->ResolveContacts(mCData.contactArray, mCData.contactCount, duration);
 		}
 
 		void UpdateObjectCB()
@@ -494,10 +585,10 @@ namespace orangelie
 		{
 			using Shader::TextVertex;
 			
-			std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
-			DirectX::XMFLOAT4 pos = {};
-			mRigidBody.GetRotation(pos);
-			//std::string sentence = "(" + std::to_string(pos.x) + ", " + std::to_string(pos.y) + ", " + std::to_string(pos.z) + ")";
+			DirectX::XMFLOAT4 Acc = {};
+			mRigidBody2.GetPosition(Acc);
+			std::string sentence = "( " + std::to_string(Acc.x) + ", " + std::to_string(Acc.y) + ", " + std::to_string(Acc.z) + std::to_string(Acc.w) + " )";
+			//std::string sentence = "GameTime: " + std::to_string(mGameTimer.TotalTime()) + " seconds";
 			int numLetters = (int)sentence.size();
 
 			if (numLetters >= gMaxNumTextCharacters)
@@ -593,7 +684,7 @@ namespace orangelie
 				CloseHandle(hEvent);
 			}
 
-			UpdateRigidBodies();
+			UpdateRigidBodies(dt);
 			UpdateObjectCB();
 			UpdatePassCB();
 			UpdateTextVB();

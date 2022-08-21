@@ -138,7 +138,10 @@ namespace orangelie
 
 			if (std::fabsf(mContactNormal.x) > std::fabsf(mContactNormal.x))
 			{
-				const float s = 1.0f / std::sqrt(mContactNormal.z * mContactNormal.z + mContactNormal.x * mContactNormal.x);
+				const float sqrt = std::sqrtf(mContactNormal.z * mContactNormal.z + mContactNormal.x * mContactNormal.x);
+				float s = 1.0 / sqrt;
+				if (sqrt == 0.0f)
+					s = 0.0f;
 
 				contactTangent[0].x = s * mContactNormal.z;
 				contactTangent[0].y = 0.0f;
@@ -150,7 +153,10 @@ namespace orangelie
 			}
 			else
 			{
-				const float s = 1.0f / std::sqrt(mContactNormal.z * mContactNormal.z + mContactNormal.y * mContactNormal.y);
+				const float sqrt = std::sqrtf(mContactNormal.z * mContactNormal.z + mContactNormal.y * mContactNormal.y);
+				float s = 1.0 / sqrt;
+				if (sqrt == 0.0f)
+					s = 0.0f;
 
 				contactTangent[0].x = 0.0f;
 				contactTangent[0].y = -s * mContactNormal.z;
@@ -170,7 +176,8 @@ namespace orangelie
 			DirectX::XMFLOAT4 impulseContact = {};
 
 			mBodies[0]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[0]);
-			mBodies[1]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[1]);
+			if(mBodies[1])
+				mBodies[1]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[1]);
 
 			if (mFriction == 0.0f)
 			{
@@ -201,8 +208,8 @@ namespace orangelie
 				velocityChange[1].x = velocityChange[1].y = velocityChange[1].z = 0.0f;
 				Utils::MathTool::AddScaledVector(velocityChange[1], impulse, -mBodies[1]->GetInverseMass());
 
-				mBodies[0]->AddVelocity(velocityChange[1].x, velocityChange[1].y, velocityChange[1].z);
-				mBodies[0]->AddRotation(rotationChange[1].x, rotationChange[1].y, rotationChange[1].z);
+				mBodies[1]->AddVelocity(velocityChange[1].x, velocityChange[1].y, velocityChange[1].z);
+				mBodies[1]->AddRotation(rotationChange[1].x, rotationChange[1].y, rotationChange[1].z);
 			}
 		}
 
@@ -273,6 +280,7 @@ namespace orangelie
 					DirectX::XMStoreFloat4(&targetAngularDirection,
 						DirectX::XMVector3Cross(DirectX::XMLoadFloat4(&mRelativeContactPosition[i]), DirectX::XMLoadFloat4(&mContactNormal)));
 
+					
 					Utils::MathTool::Transform(angularChange[i], inverseInertiaTensorWorld, targetAngularDirection);
 					Utils::MathTool::Scalar(angularChange[i], angularMove[i] / angularInertia[i]);
 				}
@@ -367,13 +375,17 @@ namespace orangelie
 			deltaVelocity *= contactToWorld;
 
 			DirectX::XMFLOAT4X4 deltaVelocityF = {};
+
 			DirectX::XMStoreFloat4x4(&deltaVelocityF, deltaVelocity);
 			deltaVelocityF.m[0][0] += inverseMass;
 			deltaVelocityF.m[1][1] += inverseMass;
 			deltaVelocityF.m[2][2] += inverseMass;
 
 			DirectX::XMFLOAT4X4 impulseMatrix = {};
-			DirectX::XMStoreFloat4x4(&impulseMatrix, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(DirectX::XMLoadFloat4x4(&deltaVelocityF)), DirectX::XMLoadFloat4x4(&deltaVelocityF)));
+			//DirectX::XMMATRIX tempMat = DirectX::XMLoadFloat4x4(&deltaVelocityF);
+			//DirectX::XMStoreFloat4x4(&impulseMatrix, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(tempMat), tempMat));
+
+			impulseMatrix = Utils::MathTool::SetInverse(deltaVelocityF);
 
 			DirectX::XMFLOAT4 velKill = { mDesiredDeltaVelocity, -mContactVelocity.y,  -mContactVelocity.z, 0.0f };
 			Utils::MathTool::Transform(impulseContact, impulseMatrix, velKill);
@@ -389,7 +401,7 @@ namespace orangelie
 				impulseContact.y *= impulseContact.x * mFriction;
 				impulseContact.z *= impulseContact.x * mFriction;
 			}
-
+			
 			return impulseContact;
 		}
 

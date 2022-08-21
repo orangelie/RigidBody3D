@@ -243,8 +243,7 @@ namespace orangelie
 
 		void RigidBody::GetTransform(DirectX::XMFLOAT4X4& transformMatrix)
 		{
-			DirectX::XMMATRIX T = DirectX::XMLoadFloat4x4(&mTransformMatrix);
-			DirectX::XMStoreFloat4x4(&transformMatrix, DirectX::XMMatrixTranspose(T));
+			transformMatrix = mTransformMatrix;
 		}
 
 		void RigidBody::GetInverseInertiaTensorWorld(DirectX::XMFLOAT4X4& InertiaTensor)

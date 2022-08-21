@@ -69,6 +69,10 @@ namespace Utils
         void InertiaTensorCoeffs(DirectX::XMFLOAT4X4& InertiaTensor,float ix, float iy, float iz, float ixy = 0.0f, float ixz = 0.0f, float iyz = 0.0f);
         void BlockInertiaTensor(DirectX::XMFLOAT4X4& InertiaTensor, const DirectX::XMFLOAT4& halfSizes, const float& mass);
         void SetComponents(DirectX::XMFLOAT4X4& Comp, const DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, const DirectX::XMFLOAT4& V3);
+        DirectX::XMFLOAT4X4 SetInverse(const DirectX::XMFLOAT4X4& M);
+
+        void PrintVector(const DirectX::XMFLOAT4& V);
+        void PrintMatrix(const DirectX::XMFLOAT4X4& M);
     }
 
     DirectX::XMFLOAT4X4 MatrixIdentity();

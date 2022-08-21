@@ -15,33 +15,33 @@ namespace orangelie
 
 		public:
 			// 접촉에 관련된 강체들
-			RigidBody* mBodies[2];
+			RigidBody* mBodies[2] = {};
 
 			// 마찰 계수
-			float mFriction;
+			float mFriction = 0.0f;
 			// 반발 계수
-			float mRestitution;
+			float mRestitution = 0.0f;
 			// 침투 깊이
-			float mPenetration;
+			float mPenetration = 0.0f;
 
 			// 세계좌표에서의 접촉점
-			DirectX::XMFLOAT4 mContactPoint;
+			DirectX::XMFLOAT4 mContactPoint = {};
 			// 세계좌표에서의 방향
-			DirectX::XMFLOAT4 mContactNormal;
+			DirectX::XMFLOAT4 mContactNormal = {};
 
 			void SetBodyData(RigidBody* one, RigidBody* two, float friction, float restitution);
 
 		protected:
 			// 접촉을 해결하는데 필요한 속도변화
-			float mDesiredDeltaVelocity;
+			float mDesiredDeltaVelocity = 0.0f;
 
 			// 접촉-세계 변환행렬
-			DirectX::XMFLOAT4X4 mContactToWorld;
+			DirectX::XMFLOAT4X4 mContactToWorld = {};
 
 			// 접촉했을때의 닫힌 속력
-			DirectX::XMFLOAT4 mContactVelocity;
+			DirectX::XMFLOAT4 mContactVelocity = {};
 			// 강체중심을 기준으로한 접점의 세계공간 위치
-			DirectX::XMFLOAT4 mRelativeContactPosition[2];
+			DirectX::XMFLOAT4 mRelativeContactPosition[2] = {};
 
 		protected:
 			// 내부데이터에서 상태데이터로 전환

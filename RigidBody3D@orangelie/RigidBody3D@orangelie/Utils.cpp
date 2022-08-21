@@ -54,10 +54,10 @@ namespace Utils
         {
             DirectX::XMFLOAT4X4 M = {};
             
-            M.m[0][0] = 0;      M.m[0][1] = -V.z;   M.m[0][2] = V.y;   M.m[0][3] = 0;
-            M.m[1][0] = V.z;    M.m[1][1] = 0;      M.m[1][2] = -V.x;  M.m[1][3] = 0;
-            M.m[2][0] = -V.y;   M.m[2][1] = V.x;    M.m[2][2] = 0;     M.m[2][3] = 0;
-            M.m[3][0] = 0;      M.m[3][1] = 0;      M.m[3][2] = 0;     M.m[3][3] = 1;
+            M.m[0][0] = 0.0f;   M.m[0][1] = -V.z;   M.m[0][2] = V.y;   M.m[0][3] = 0.0f;
+            M.m[1][0] = V.z;    M.m[1][1] = 0.0f;   M.m[1][2] = -V.x;  M.m[1][3] = 0.0f;
+            M.m[2][0] = -V.y;   M.m[2][1] = V.x;    M.m[2][2] = 0.0f;  M.m[2][3] = 0.0f;
+            M.m[3][0] = 0.0f;   M.m[3][1] = 0.0f;   M.m[3][2] = 0.0f;  M.m[3][3] = 1.0f;
 
             return M;
         }
@@ -85,6 +85,59 @@ namespace Utils
             Comp.m[1][0] = V1.y;    Comp.m[1][1] = V2.y;    Comp.m[1][2] = V3.y;    Comp.m[1][3] = 0.0f;
             Comp.m[2][0] = V1.z;    Comp.m[2][1] = V2.z;    Comp.m[2][2] = V3.z;    Comp.m[2][3] = 0.0f;
             Comp.m[3][0] = 0.0f;    Comp.m[3][1] = 0.0f;    Comp.m[3][2] = 0.0f;    Comp.m[3][3] = 1.0f;
+        }
+
+        DirectX::XMFLOAT4X4 SetInverse(const DirectX::XMFLOAT4X4& M)
+        {
+            DirectX::XMFLOAT4X4 data = Utils::MatrixIdentity();
+
+            float t4 = M.m[0][0] * M.m[1][1];
+            float t6 = M.m[0][0] * M.m[1][2];
+            float t8 = M.m[0][1] * M.m[1][0];
+            float t10 = M.m[0][2] * M.m[1][0];
+            float t12 = M.m[0][1] * M.m[2][0];
+            float t14 = M.m[0][2] * M.m[2][0];
+
+            // Calculate the determinant
+            float t16 = (t4 * M.m[2][2] - t6 * M.m[2][1] - t8 * M.m[2][2] +
+                t10 * M.m[2][1] + t12 * M.m[1][2] - t14 * M.m[1][1]);
+
+            // Make sure the determinant is non-zero.
+            if (t16 == (float)0.0f) return Utils::MatrixIdentity();
+            float t17 = 1.0f / t16;
+
+            data.m[0][0] = (M.m[1][1] * M.m[2][2] - M.m[1][2] * M.m[2][1]) * t17;
+            data.m[0][1] = -(M.m[0][1] * M.m[2][2] - M.m[0][2] * M.m[2][1]) * t17;
+            data.m[0][2] = (M.m[0][1] * M.m[1][2] - M.m[0][2] * M.m[1][1]) * t17;
+            data.m[1][0] = -(M.m[1][0] * M.m[2][2] - M.m[1][2] * M.m[2][0]) * t17;
+            data.m[1][1] = (M.m[0][0] * M.m[2][2] - t14) * t17;
+            data.m[1][2] = -(t6 - t10) * t17;
+            data.m[2][0] = (M.m[1][0] * M.m[2][1] - M.m[1][1] * M.m[2][0]) * t17;
+            data.m[2][1] = -(M.m[0][0] * M.m[2][1] - t12) * t17;
+            data.m[2][2] = (t4 - t8) * t17;
+
+            data.m[3][3] = 1.0f;
+
+            return data;
+        }
+
+        void PrintVector(const DirectX::XMFLOAT4& V)
+        {
+            std::string str =
+                std::to_string(V.x) + ", " + std::to_string(V.y) + ", " + std::to_string(V.z) + ", " + std::to_string(V.w);
+
+            MessageBoxA(0, str.c_str(), "", MB_OK);
+        }
+
+        void PrintMatrix(const DirectX::XMFLOAT4X4& M)
+        {
+            std::string str =
+                std::to_string(M.m[0][0]) + ", " + std::to_string(M.m[0][1]) + ", " + std::to_string(M.m[0][2]) + ", " + std::to_string(M.m[0][3]) + "\n" +
+                std::to_string(M.m[1][0]) + ", " + std::to_string(M.m[1][1]) + ", " + std::to_string(M.m[1][2]) + ", " + std::to_string(M.m[1][3]) + "\n" +
+                std::to_string(M.m[2][0]) + ", " + std::to_string(M.m[2][1]) + ", " + std::to_string(M.m[2][2]) + ", " + std::to_string(M.m[2][3]) + "\n" +
+                std::to_string(M.m[3][0]) + ", " + std::to_string(M.m[3][1]) + ", " + std::to_string(M.m[3][2]) + ", " + std::to_string(M.m[3][3]);
+
+            MessageBoxA(0, str.c_str(), "", MB_OK);
         }
     }
 
