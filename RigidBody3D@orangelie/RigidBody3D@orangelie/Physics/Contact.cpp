@@ -172,7 +172,7 @@ namespace orangelie
 
 		void Contact::ApplyVelocityChange(DirectX::XMFLOAT4 velocityChange[2], DirectX::XMFLOAT4 rotationChange[2])
 		{
-			DirectX::XMFLOAT4X4 inverseInertiaTensorWorld[2] = {};
+			DirectX::XMFLOAT3X4 inverseInertiaTensorWorld[2] = {};
 			DirectX::XMFLOAT4 impulseContact = {};
 
 			mBodies[0]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld[0]);
@@ -217,12 +217,12 @@ namespace orangelie
 		{
 			const float angularLimit = 0.2f;
 			float totalInertia = 0.0f;
-			float linearMove[2], angularMove[2];
-			float linearInertia[2], angularInertia[2];
+			float linearMove[2] = {}, angularMove[2] = {};
+			float linearInertia[2] = {}, angularInertia[2] = {};
 
 			for (unsigned i = 0; i < 2; ++i) if (mBodies[i])
 			{
-				DirectX::XMFLOAT4X4 inverseInertiaTensorWorld;
+				DirectX::XMFLOAT3X4 inverseInertiaTensorWorld;
 				mBodies[i]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld);
 
 				DirectX::XMFLOAT4 angularInertiaWorld;
@@ -273,7 +273,7 @@ namespace orangelie
 				}
 				else
 				{
-					DirectX::XMFLOAT4X4 inverseInertiaTensorWorld;
+					DirectX::XMFLOAT3X4 inverseInertiaTensorWorld;
 					mBodies[i]->GetInverseInertiaTensorWorld(inverseInertiaTensorWorld);
 
 					DirectX::XMFLOAT4 targetAngularDirection;
@@ -306,7 +306,7 @@ namespace orangelie
 			}
 		}
 
-		DirectX::XMFLOAT4 Contact::CalculateFrictionlessImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor)
+		DirectX::XMFLOAT4 Contact::CalculateFrictionlessImpulse(DirectX::XMFLOAT3X4* inverseInertiaTensor)
 		{
 			DirectX::XMFLOAT4 impulseContact = {}, deltaVelWorld = {};
 
@@ -343,49 +343,48 @@ namespace orangelie
 			return impulseContact;
 		}
 
-		DirectX::XMFLOAT4 Contact::CalculateFrictionImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor)
+		DirectX::XMFLOAT4 Contact::CalculateFrictionImpulse(DirectX::XMFLOAT3X4* inverseInertiaTensor)
 		{
 			DirectX::XMFLOAT4 impulseContact = {};
 			float inverseMass = mBodies[0]->GetInverseMass();
 
-			DirectX::XMFLOAT4X4 impulseToTorque = Utils::MathTool::SetSkewSymmetric(mRelativeContactPosition[0]);
+			DirectX::XMFLOAT3X4 impulseToTorque = Utils::MathTool::SetSkewSymmetric(mRelativeContactPosition[0]);
 
-			DirectX::XMMATRIX deltaVelWorld1 = DirectX::XMLoadFloat4x4(&impulseToTorque);
-			deltaVelWorld1 *= DirectX::XMLoadFloat4x4(&inverseInertiaTensor[0]);
-			deltaVelWorld1 *= DirectX::XMLoadFloat4x4(&impulseToTorque);
+			DirectX::XMMATRIX deltaVelWorld1 = DirectX::XMLoadFloat3x4(&impulseToTorque);
+			deltaVelWorld1 *= DirectX::XMLoadFloat3x4(&inverseInertiaTensor[0]);
+			deltaVelWorld1 *= DirectX::XMLoadFloat3x4(&impulseToTorque);
 			deltaVelWorld1 *= -1.0f;
 
 			if (mBodies[1])
 			{
 				impulseToTorque = Utils::MathTool::SetSkewSymmetric(mRelativeContactPosition[1]);
 
-				DirectX::XMMATRIX deltaVelWorld2 = DirectX::XMLoadFloat4x4(&impulseToTorque);
-				deltaVelWorld2 *= DirectX::XMLoadFloat4x4(&inverseInertiaTensor[0]);
-				deltaVelWorld2 *= DirectX::XMLoadFloat4x4(&impulseToTorque);
+				DirectX::XMMATRIX deltaVelWorld2 = DirectX::XMLoadFloat3x4(&impulseToTorque);
+				deltaVelWorld2 *= DirectX::XMLoadFloat3x4(&inverseInertiaTensor[0]);
+				deltaVelWorld2 *= DirectX::XMLoadFloat3x4(&impulseToTorque);
 				deltaVelWorld2 *= -1.0f;
 
 				deltaVelWorld1 += deltaVelWorld2;
 				inverseMass += mBodies[1]->GetInverseMass();
 			}
 
-			DirectX::XMMATRIX contactToWorld = DirectX::XMLoadFloat4x4(&mContactToWorld);
+			DirectX::XMMATRIX contactToWorld = DirectX::XMLoadFloat3x4(&mContactToWorld);
 
 			DirectX::XMMATRIX deltaVelocity = DirectX::XMMatrixTranspose(contactToWorld);
 			deltaVelocity *= deltaVelWorld1;
 			deltaVelocity *= contactToWorld;
 
-			DirectX::XMFLOAT4X4 deltaVelocityF = {};
+			DirectX::XMFLOAT3X4 deltaVelocityF = {};
 
-			DirectX::XMStoreFloat4x4(&deltaVelocityF, deltaVelocity);
+			DirectX::XMStoreFloat3x4(&deltaVelocityF, deltaVelocity);
 			deltaVelocityF.m[0][0] += inverseMass;
 			deltaVelocityF.m[1][1] += inverseMass;
 			deltaVelocityF.m[2][2] += inverseMass;
 
-			DirectX::XMFLOAT4X4 impulseMatrix = {};
-			//DirectX::XMMATRIX tempMat = DirectX::XMLoadFloat4x4(&deltaVelocityF);
-			//DirectX::XMStoreFloat4x4(&impulseMatrix, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(tempMat), tempMat));
-
-			impulseMatrix = Utils::MathTool::SetInverse(deltaVelocityF);
+			DirectX::XMFLOAT3X4 impulseMatrix = {};
+			DirectX::XMMATRIX tempMat = DirectX::XMLoadFloat3x4(&deltaVelocityF);
+			DirectX::XMStoreFloat3x4(&impulseMatrix, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(tempMat), tempMat));
+			//impulseMatrix = Utils::MathTool::SetInverse(deltaVelocityF);
 
 			DirectX::XMFLOAT4 velKill = { mDesiredDeltaVelocity, -mContactVelocity.y,  -mContactVelocity.z, 0.0f };
 			Utils::MathTool::Transform(impulseContact, impulseMatrix, velKill);

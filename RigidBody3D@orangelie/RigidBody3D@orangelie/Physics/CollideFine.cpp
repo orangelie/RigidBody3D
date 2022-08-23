@@ -7,10 +7,10 @@ namespace orangelie
 	{
 		void CollisionPrimitive::CalculateInternals()
 		{
-			DirectX::XMFLOAT4X4 transform = {};
+			DirectX::XMFLOAT3X4 transform = {};
 			mBody->GetTransform(transform);
 
-			DirectX::XMStoreFloat4x4(&mTransform, DirectX::XMLoadFloat4x4(&transform) * DirectX::XMLoadFloat4x4(&mOffset));
+			DirectX::XMStoreFloat3x4(&mTransform, DirectX::XMLoadFloat3x4(&transform) * DirectX::XMLoadFloat3x4(&mOffset));
 		}
 
 		inline
@@ -62,9 +62,6 @@ namespace orangelie
 			unsigned best = 0xffffff;
 
 			OVERLAP_AXIS(one.GetAxis(0), 0);
-
-			// MessageBoxA(0, std::to_string(two.GetTransform().m[0][3]).c_str(), "", MB_OK);
-
 			OVERLAP_AXIS(one.GetAxis(1), 1);
 			OVERLAP_AXIS(one.GetAxis(2), 2);
 
@@ -94,15 +91,15 @@ namespace orangelie
 			}
 			else if (best < 6)
 			{
-				FillPointFaceBoxBox(one, two, data, toCentre * -1.0f, pen, best - 3);
+				FillPointFaceBoxBox(two, one, data, toCentre * -1.0f, pen, best - 3);
 				data->AddContact(1);
 				return 1;
 			}
 			else
 			{
 				best -= 6;
-				unsigned oneAxisIndex = best / 6;
-				unsigned twoAxisIndex = best % 6;
+				unsigned oneAxisIndex = best / 3;
+				unsigned twoAxisIndex = best % 3;
 				XMVECTOR oneAxis = one.GetAxis(oneAxisIndex);
 				XMVECTOR twoAxis = two.GetAxis(twoAxisIndex);
 				XMVECTOR axis = XMVector3Cross(oneAxis, twoAxis);
@@ -133,8 +130,8 @@ namespace orangelie
 				XMVECTOR ptOnOneEdge = XMLoadFloat4(&ptOnOneEdgeF);
 				XMVECTOR ptOnTwoEdge = XMLoadFloat4(&ptOnTwoEdgeF);
 
-				ptOnOneEdge = XMVector3TransformCoord(ptOnOneEdge, XMLoadFloat4x4(&one.GetTransform()));
-				ptOnTwoEdge = XMVector3TransformCoord(ptOnTwoEdge, XMLoadFloat4x4(&two.GetTransform()));
+				ptOnOneEdge = XMVector3TransformCoord(ptOnOneEdge, XMLoadFloat3x4(&one.GetTransform()));
+				ptOnTwoEdge = XMVector3TransformCoord(ptOnTwoEdge, XMLoadFloat3x4(&two.GetTransform()));
 
 				XMVECTOR vertex = ContactPoint(
 					ptOnOneEdge, oneAxis, VectorGet(one.mHalfSize, oneAxisIndex),
@@ -161,7 +158,7 @@ namespace orangelie
 
 			float smOne = XMVectorGetX(XMVector3LengthSq(dOne));
 			float smTwo = XMVectorGetX(XMVector3LengthSq(dTwo));
-			float dpOneTwo = XMVectorGetX(XMVector3Dot(dOne, dTwo));
+			float dpOneTwo = XMVectorGetX(XMVector3Dot(dTwo, dOne));
 
 			XMVECTOR toSt = pOne - pTwo;
 			float dpStaOne = XMVectorGetX(XMVector3Dot(dOne, toSt));
@@ -185,7 +182,7 @@ namespace orangelie
 				XMVECTOR cOne = pOne + dOne * mua;
 				XMVECTOR cTwo = pTwo + dTwo * mub;
 
-				return 0.5f * cOne + 0.5f * cTwo;
+				return (0.5f * cOne) + (0.5f * cTwo);
 			}
 		}
 
@@ -241,7 +238,7 @@ namespace orangelie
 				vertexF.z = -vertexF.z;
 
 			XMStoreFloat4(&contact->mContactNormal, normal);
-			XMStoreFloat4(&contact->mContactPoint, XMVector3TransformCoord(XMLoadFloat4(&vertexF), XMLoadFloat4x4(&two.GetTransform())));
+			XMStoreFloat4(&contact->mContactPoint, XMVector3TransformCoord(XMLoadFloat4(&vertexF), XMLoadFloat3x4(&two.GetTransform())));
 			contact->mPenetration = pen;
 
 			contact->SetBodyData(one.mBody, two.mBody, data->friction, data->restitution);

@@ -31,7 +31,7 @@ namespace orangelie
 			void SetRotation(const float x, const float y, const float z);
 			void SetOrientation(const float i, const float j, const float k, const float r);
 			void SetDamping(const float linearDamping, const float angularDamping);
-			void SetInertiaTensor(const DirectX::XMFLOAT4X4& InertiaTensor);
+			void SetInertiaTensor(const DirectX::XMFLOAT3X4& InertiaTensor);
 			void SetGravity(const bool isGravity);
 
 			void AddVelocity(const float x, const float y, const float z);
@@ -44,8 +44,8 @@ namespace orangelie
 			float GetInverseMass() const;
 			bool GetAwake() const;
 			void GetLastframeAcceleration(DirectX::XMFLOAT4& Acceleration);
-			void GetTransform(DirectX::XMFLOAT4X4& transformMatrix);
-			void GetInverseInertiaTensorWorld(DirectX::XMFLOAT4X4& InertiaTensor);
+			void GetTransform(DirectX::XMFLOAT3X4& transformMatrix);
+			void GetInverseInertiaTensorWorld(DirectX::XMFLOAT3X4& InertiaTensor);
 
 		private:
 			// 질량의 역수
@@ -81,11 +81,11 @@ namespace orangelie
 			DirectX::XMFLOAT4 mLastframeAcceleration = {};
 
 			// 신체공간에서의 관성텐서의 역행렬
-			DirectX::XMFLOAT4X4 mInverseInertiaTensor = {};
+			DirectX::XMFLOAT3X4 mInverseInertiaTensor = {};
 			// 세계공간에서의 관성텐서의 역행렬
-			DirectX::XMFLOAT4X4 mInverseInertiaTensorWorld = {};
+			DirectX::XMFLOAT3X4 mInverseInertiaTensorWorld = {};
 			// 신체공간을 세계공간으로 바꾸는 변환 행렬
-			DirectX::XMFLOAT4X4 mTransformMatrix = {};
+			DirectX::XMFLOAT3X4 mTransformMatrix = {};
 
 		};
 	}

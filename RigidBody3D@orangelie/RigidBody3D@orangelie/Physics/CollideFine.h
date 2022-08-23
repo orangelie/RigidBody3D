@@ -51,7 +51,7 @@ namespace orangelie
 			friend class CollisionDetector;
 
 			RigidBody* mBody;
-			DirectX::XMFLOAT4X4 mOffset = Utils::MatrixIdentity();
+			DirectX::XMFLOAT3X4 mOffset = Utils::MatrixIdentity3();
 
 			void CalculateInternals();
 
@@ -60,18 +60,13 @@ namespace orangelie
 				return DirectX::XMVectorSet(mTransform.m[0][index], mTransform.m[1][index], mTransform.m[2][index], 0.0f);
 			}
 
-			void SetTransform(const DirectX::XMFLOAT4X4& transform)
-			{
-				mTransform = transform;
-			}
-
-			const DirectX::XMFLOAT4X4& GetTransform() const
+			const DirectX::XMFLOAT3X4& GetTransform() const
 			{
 				return mTransform;
 			}
 
 		protected:
-			DirectX::XMFLOAT4X4 mTransform = {};
+			DirectX::XMFLOAT3X4 mTransform = Utils::MatrixIdentity3();
 
 		};
 

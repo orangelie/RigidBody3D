@@ -36,41 +36,39 @@ namespace Utils
             Q.w += nQ.w * 0.5f;
         }
 
-        void Transform(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V)
+        void Transform(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT3X4& M, const DirectX::XMFLOAT4& V)
         {
             Out.x = M.m[0][0] * V.x + M.m[0][1] * V.y + M.m[0][2] * V.z;
             Out.y = M.m[1][0] * V.x + M.m[1][1] * V.y + M.m[1][2] * V.z;
             Out.z = M.m[2][0] * V.x + M.m[2][1] * V.y + M.m[2][2] * V.z;
         }
 
-        void TransformTranspose(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT4X4& M, const DirectX::XMFLOAT4& V)
+        void TransformTranspose(DirectX::XMFLOAT4& Out, const DirectX::XMFLOAT3X4& M, const DirectX::XMFLOAT4& V)
         {
             Out.x = M.m[0][0] * V.x + M.m[1][0] * V.y + M.m[2][0] * V.z;
             Out.y = M.m[0][1] * V.x + M.m[1][1] * V.y + M.m[2][1] * V.z;
             Out.z = M.m[0][2] * V.x + M.m[1][2] * V.y + M.m[2][2] * V.z;
         }
 
-        DirectX::XMFLOAT4X4 SetSkewSymmetric(const DirectX::XMFLOAT4& V)
+        DirectX::XMFLOAT3X4 SetSkewSymmetric(const DirectX::XMFLOAT4& V)
         {
-            DirectX::XMFLOAT4X4 M = {};
+            DirectX::XMFLOAT3X4 M = {};
             
             M.m[0][0] = 0.0f;   M.m[0][1] = -V.z;   M.m[0][2] = V.y;   M.m[0][3] = 0.0f;
             M.m[1][0] = V.z;    M.m[1][1] = 0.0f;   M.m[1][2] = -V.x;  M.m[1][3] = 0.0f;
             M.m[2][0] = -V.y;   M.m[2][1] = V.x;    M.m[2][2] = 0.0f;  M.m[2][3] = 0.0f;
-            M.m[3][0] = 0.0f;   M.m[3][1] = 0.0f;   M.m[3][2] = 0.0f;  M.m[3][3] = 1.0f;
 
             return M;
         }
 
-        void InertiaTensorCoeffs(DirectX::XMFLOAT4X4& InertiaTensor, float ix, float iy, float iz, float ixy, float ixz, float iyz)
+        void InertiaTensorCoeffs(DirectX::XMFLOAT3X4& InertiaTensor, float ix, float iy, float iz, float ixy, float ixz, float iyz)
         {
             InertiaTensor.m[0][0] = ix;     InertiaTensor.m[0][1] = -ixy;   InertiaTensor.m[0][2] = -ixz;   InertiaTensor.m[0][3] = 0;
             InertiaTensor.m[1][0] = -ixy;   InertiaTensor.m[1][1] = iy;     InertiaTensor.m[1][2] = -iyz;   InertiaTensor.m[1][3] = 0;
             InertiaTensor.m[2][0] = -ixz;   InertiaTensor.m[2][1] = -iyz;   InertiaTensor.m[2][2] = iz;     InertiaTensor.m[2][3] = 0;
-            InertiaTensor.m[3][0] = 0;      InertiaTensor.m[3][1] = 0;      InertiaTensor.m[3][2] = 0;      InertiaTensor.m[3][3] = 1;
         }
 
-        void BlockInertiaTensor(DirectX::XMFLOAT4X4& InertiaTensor, const DirectX::XMFLOAT4& halfSizes, const float& mass)
+        void BlockInertiaTensor(DirectX::XMFLOAT3X4& InertiaTensor, const DirectX::XMFLOAT4& halfSizes, const float& mass)
         {
             DirectX::XMFLOAT4 squared = { halfSizes.x * halfSizes.x, halfSizes.y * halfSizes.y, halfSizes.z * halfSizes.z, halfSizes.w };
 
@@ -79,7 +77,7 @@ namespace Utils
                 coeff * (squared.x + squared.z), coeff * (squared.x + squared.y));
         }
 
-        void SetComponents(DirectX::XMFLOAT4X4& Comp, const DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, const DirectX::XMFLOAT4& V3)
+        void SetComponents(DirectX::XMFLOAT3X4& Comp, const DirectX::XMFLOAT4& V1, const DirectX::XMFLOAT4& V2, const DirectX::XMFLOAT4& V3)
         {
             Comp.m[0][0] = V1.x;    Comp.m[0][1] = V2.x;    Comp.m[0][2] = V3.x;    Comp.m[0][3] = 0.0f;
             Comp.m[1][0] = V1.y;    Comp.m[1][1] = V2.y;    Comp.m[1][2] = V3.y;    Comp.m[1][3] = 0.0f;
@@ -87,9 +85,9 @@ namespace Utils
             Comp.m[3][0] = 0.0f;    Comp.m[3][1] = 0.0f;    Comp.m[3][2] = 0.0f;    Comp.m[3][3] = 1.0f;
         }
 
-        DirectX::XMFLOAT4X4 SetInverse(const DirectX::XMFLOAT4X4& M)
+        DirectX::XMFLOAT3X4 SetInverse(const DirectX::XMFLOAT3X4& M)
         {
-            DirectX::XMFLOAT4X4 data = Utils::MatrixIdentity();
+            DirectX::XMFLOAT3X4 data = Utils::MatrixIdentity3();
 
             float t4 = M.m[0][0] * M.m[1][1];
             float t6 = M.m[0][0] * M.m[1][2];
@@ -103,7 +101,7 @@ namespace Utils
                 t10 * M.m[2][1] + t12 * M.m[1][2] - t14 * M.m[1][1]);
 
             // Make sure the determinant is non-zero.
-            if (t16 == (float)0.0f) return Utils::MatrixIdentity();
+            if (t16 == (float)0.0f) return Utils::MatrixIdentity3();
             float t17 = 1.0f / t16;
 
             data.m[0][0] = (M.m[1][1] * M.m[2][2] - M.m[1][2] * M.m[2][1]) * t17;
@@ -129,13 +127,12 @@ namespace Utils
             MessageBoxA(0, str.c_str(), "", MB_OK);
         }
 
-        void PrintMatrix(const DirectX::XMFLOAT4X4& M)
+        void PrintMatrix(const DirectX::XMFLOAT3X4& M)
         {
             std::string str =
                 std::to_string(M.m[0][0]) + ", " + std::to_string(M.m[0][1]) + ", " + std::to_string(M.m[0][2]) + ", " + std::to_string(M.m[0][3]) + "\n" +
                 std::to_string(M.m[1][0]) + ", " + std::to_string(M.m[1][1]) + ", " + std::to_string(M.m[1][2]) + ", " + std::to_string(M.m[1][3]) + "\n" +
-                std::to_string(M.m[2][0]) + ", " + std::to_string(M.m[2][1]) + ", " + std::to_string(M.m[2][2]) + ", " + std::to_string(M.m[2][3]) + "\n" +
-                std::to_string(M.m[3][0]) + ", " + std::to_string(M.m[3][1]) + ", " + std::to_string(M.m[3][2]) + ", " + std::to_string(M.m[3][3]);
+                std::to_string(M.m[2][0]) + ", " + std::to_string(M.m[2][1]) + ", " + std::to_string(M.m[2][2]) + ", " + std::to_string(M.m[2][3]);
 
             MessageBoxA(0, str.c_str(), "", MB_OK);
         }
@@ -148,6 +145,17 @@ namespace Utils
             0.0f, 1.0f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        return identity;
+    }
+
+    DirectX::XMFLOAT3X4 MatrixIdentity3()
+    {
+        static DirectX::XMFLOAT3X4 identity = {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f
         };
 
         return identity;

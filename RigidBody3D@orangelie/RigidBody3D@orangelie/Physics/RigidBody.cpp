@@ -14,17 +14,17 @@ namespace orangelie
 			quaternion = DirectX::XMQuaternionNormalize(quaternion);
 
 			DirectX::XMMATRIX transformMat = DirectX::XMMatrixAffineTransformation(DirectX::XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f), quatOrigin, quaternion, position);
-			DirectX::XMStoreFloat4x4(&mTransformMatrix, DirectX::XMMatrixTranspose(transformMat));
+			DirectX::XMStoreFloat3x4(&mTransformMatrix, DirectX::XMMatrixTranspose(transformMat));
 
 			mTransformMatrix.m[0][3] = mPosition.x;
 			mTransformMatrix.m[1][3] = mPosition.y;
 			mTransformMatrix.m[2][3] = mPosition.z;
 
 
-			DirectX::XMMATRIX A = DirectX::XMLoadFloat4x4(&mTransformMatrix);
-			DirectX::XMMATRIX B = DirectX::XMLoadFloat4x4(&mInverseInertiaTensor);
+			DirectX::XMMATRIX A = DirectX::XMLoadFloat3x4(&mTransformMatrix);
+			DirectX::XMMATRIX B = DirectX::XMLoadFloat3x4(&mInverseInertiaTensor);
 			B = DirectX::XMMatrixMultiply(A, B);
-			DirectX::XMStoreFloat4x4(&mInverseInertiaTensorWorld, DirectX::XMMatrixMultiply(B, DirectX::XMMatrixTranspose(A)));
+			DirectX::XMStoreFloat3x4(&mInverseInertiaTensorWorld, DirectX::XMMatrixMultiply(B, DirectX::XMMatrixTranspose(A)));
 
 			DirectX::XMStoreFloat4(&mPosition, position);
 			DirectX::XMStoreFloat4(&mOrientation, quaternion);
@@ -102,7 +102,7 @@ namespace orangelie
 			mPosition.x = x;
 			mPosition.y = y;
 			mPosition.z = z;
-			mPosition.w = 0.0f;
+			mPosition.w = 1.0f;
 		}
 
 		void RigidBody::setAwake(const bool awake)
@@ -170,10 +170,10 @@ namespace orangelie
 			mAngularDamping = angularDamping;
 		}
 
-		void RigidBody::SetInertiaTensor(const DirectX::XMFLOAT4X4& InertiaTensor)
+		void RigidBody::SetInertiaTensor(const DirectX::XMFLOAT3X4& InertiaTensor)
 		{
-			DirectX::XMMATRIX T = DirectX::XMLoadFloat4x4(&InertiaTensor);
-			DirectX::XMStoreFloat4x4(&mInverseInertiaTensor, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(T), T));
+			DirectX::XMMATRIX T = DirectX::XMLoadFloat3x4(&InertiaTensor);
+			DirectX::XMStoreFloat3x4(&mInverseInertiaTensor, DirectX::XMMatrixInverse(&DirectX::XMMatrixDeterminant(T), T));
 		}
 
 		void RigidBody::SetGravity(const bool isGravity)
@@ -241,12 +241,12 @@ namespace orangelie
 			Acceleration.z = mLastframeAcceleration.z;
 		}
 
-		void RigidBody::GetTransform(DirectX::XMFLOAT4X4& transformMatrix)
+		void RigidBody::GetTransform(DirectX::XMFLOAT3X4& transformMatrix)
 		{
 			transformMatrix = mTransformMatrix;
 		}
 
-		void RigidBody::GetInverseInertiaTensorWorld(DirectX::XMFLOAT4X4& InertiaTensor)
+		void RigidBody::GetInverseInertiaTensorWorld(DirectX::XMFLOAT3X4& InertiaTensor)
 		{
 			InertiaTensor = mInverseInertiaTensorWorld;
 		}

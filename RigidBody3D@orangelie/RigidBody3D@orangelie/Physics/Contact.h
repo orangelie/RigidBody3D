@@ -36,7 +36,7 @@ namespace orangelie
 			float mDesiredDeltaVelocity = 0.0f;
 
 			// 접촉-세계 변환행렬
-			DirectX::XMFLOAT4X4 mContactToWorld = {};
+			DirectX::XMFLOAT3X4 mContactToWorld = {};
 
 			// 접촉했을때의 닫힌 속력
 			DirectX::XMFLOAT4 mContactVelocity = {};
@@ -70,9 +70,9 @@ namespace orangelie
 			// 이 접점의 관성-가중 침투 분해능만 수행합니다.
 			void ApplyPositionChange(DirectX::XMFLOAT4 linearChange[2], DirectX::XMFLOAT4 angularChange[2], float penetration);
 			// 접촉에 마찰이 없는 경우 이때 가해지는 힘을 구한다.
-			DirectX::XMFLOAT4 CalculateFrictionlessImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor);
+			DirectX::XMFLOAT4 CalculateFrictionlessImpulse(DirectX::XMFLOAT3X4* inverseInertiaTensor);
 			// 접촉에 마찰이 0이 아닌 경우 이때 가해지는 힘을 구한다.
-			DirectX::XMFLOAT4 CalculateFrictionImpulse(DirectX::XMFLOAT4X4* inverseInertiaTensor);
+			DirectX::XMFLOAT4 CalculateFrictionImpulse(DirectX::XMFLOAT3X4* inverseInertiaTensor);
 
 		};
 
