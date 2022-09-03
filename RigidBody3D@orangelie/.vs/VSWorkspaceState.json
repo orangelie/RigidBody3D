@@ -2,7 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\RigidBody3D@orangelie",
-    "\\RigidBody3D@orangelie\\Physics"
+    "\\RigidBody3D@orangelie\\Dependencies",
+    "\\RigidBody3D@orangelie\\Physics",
+    "\\RigidBody3D@orangelie\\Shaders",
+    "\\RigidBody3D@orangelie\\Textures"
   ],
+  "SelectedNode": "\\RigidBody3D@orangelie\\Dependencies",
   "PreviewInSolutionExplorer": false
 }
